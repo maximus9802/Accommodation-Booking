@@ -13,4 +13,6 @@ public class AccountDto {
     private String address;
 
     private String phone;
+
+    private String location;
 }

@@ -13,5 +13,6 @@ public interface BookingService {
 
     List<BookingDto> allBooking(Long accountId);
 
+    List<BookingDto> searchByPhoneCustomer(String phoneCustomer, Long hotelId) throws InvalidException;
 
 }

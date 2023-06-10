@@ -10,6 +10,5 @@ import java.util.List;
 public interface RoomService {
     String save(Long idAccount, Long idHotel, RoomDto roomDto) throws InvalidException;
 
-
-
+    boolean isBookingInHotel(Long bookingId, Long hotelId);
 }

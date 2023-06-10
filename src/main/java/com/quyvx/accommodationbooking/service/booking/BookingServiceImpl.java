@@ -3,12 +3,10 @@ package com.quyvx.accommodationbooking.service.booking;
 import com.quyvx.accommodationbooking.dto.BookingDto;
 import com.quyvx.accommodationbooking.dto.Message;
 import com.quyvx.accommodationbooking.exception.InvalidException;
-import com.quyvx.accommodationbooking.model.Account;
-import com.quyvx.accommodationbooking.model.Booking;
-import com.quyvx.accommodationbooking.model.DateRent;
-import com.quyvx.accommodationbooking.model.Room;
+import com.quyvx.accommodationbooking.model.*;
 import com.quyvx.accommodationbooking.repository.*;
 import com.quyvx.accommodationbooking.service.daterent.DateRentService;
+import com.quyvx.accommodationbooking.service.room.RoomService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +28,8 @@ public class BookingServiceImpl implements  BookingService{
     private DateRentService dateRentService;
     @Autowired
     private HotelRepository hotelRepository;
+    @Autowired
+    private RoomService roomService;
 
     @Override
     public Message newBooking(Long id, BookingDto bookingDto) throws InvalidException {
@@ -124,5 +124,28 @@ public class BookingServiceImpl implements  BookingService{
 
     }
 
+    @Override
+    public List<BookingDto> searchByPhoneCustomer(String phone, Long hotelId) throws InvalidException {
+        List<Booking> bookings = bookingRepository.findByPhoneAccount(phone);
+        Iterator<Booking> iterator = bookings.iterator();
+        while(iterator.hasNext()){
+            Booking booking = iterator.next();
+            if(!roomService.isBookingInHotel(booking.getId(), hotelId)) iterator.remove();
+        }
+        if(bookings.isEmpty()) throw new InvalidException("Invalid booking");
+        else{
+            List<BookingDto> bookingDtos = new ArrayList<>();
+            for (Booking booking : bookings){
+                BookingDto bookingDto = new BookingDto();
+                bookingDto.setDateCheckIn(booking.getDateCheckIn());
+                bookingDto.setDateCheckOut(booking.getDateCheckOut());
+                bookingDto.setTotalBill(booking.getTotalBill());
+                bookingDto.setDescription(booking.getDescription());
+                bookingDto.setListRoomId(bookingRepository.getBookingRoomIds(booking.getId()));
+                bookingDtos.add(bookingDto);
+            }
+            return bookingDtos;
+        }
+    }
 
 }

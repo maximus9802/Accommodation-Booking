@@ -27,7 +27,7 @@ public class SecurityConfiguration {
                 .permitAll()
                 .requestMatchers("/api/owner/**").hasAuthority("OWNER")
                 .requestMatchers("/api/customer/**").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/account/**").hasAnyAuthority()
+//                .requestMatchers("/api/account/**").hasAnyAuthority()
                 .anyRequest()
                 .authenticated()
                 .and()

@@ -48,4 +48,11 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleInvalidException(InvalidException ex){
         return  new ErrorResponse(ex.getMessage());
     }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse exception(Exception ex){
+        return new ErrorResponse(ex.getMessage());
+    }
 }

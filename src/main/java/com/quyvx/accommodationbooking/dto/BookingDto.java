@@ -2,8 +2,10 @@ package com.quyvx.accommodationbooking.dto;
 
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +27,8 @@ public class BookingDto {
     private int totalBill;
 
     private String description;
+
+    private List<Long> listRoomId = new ArrayList<>();
 
 
 }

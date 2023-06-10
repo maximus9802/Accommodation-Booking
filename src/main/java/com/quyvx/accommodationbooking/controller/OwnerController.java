@@ -1,11 +1,13 @@
 package com.quyvx.accommodationbooking.controller;
 
+import com.quyvx.accommodationbooking.dto.BookingDto;
 import com.quyvx.accommodationbooking.dto.HotelDto;
 import com.quyvx.accommodationbooking.dto.Message;
 import com.quyvx.accommodationbooking.dto.RoomDto;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.Hotel;
 import com.quyvx.accommodationbooking.service.account.AccountService;
+import com.quyvx.accommodationbooking.service.booking.BookingService;
 import com.quyvx.accommodationbooking.service.hotel.HotelService;
 import com.quyvx.accommodationbooking.service.room.RoomService;
 import jakarta.validation.Valid;
@@ -26,6 +28,8 @@ public class OwnerController {
 
     @Autowired
     private HotelService hotelService;
+    @Autowired
+    private BookingService bookingService;
     @Autowired
     private AccountService accountService;
     @Autowired
@@ -72,5 +76,14 @@ public class OwnerController {
                              @RequestBody RoomDto roomDto
     ) throws InvalidException {
         return ResponseEntity.ok(roomService.save(idAccount, idHotel, roomDto));
+    }
+
+    @GetMapping("/{id}/{idHotel}/booking")
+    @PreAuthorize("hasAuthority('ROLE_OWNER')")
+    public ResponseEntity<List<BookingDto>> searchBookingByPhone(@PathVariable("id") Long idAccount,
+                            @PathVariable("idHotel") Long idHotel,
+                            @RequestParam String phone
+    ) throws InvalidException {
+        return ResponseEntity.ok(bookingService.searchByPhoneCustomer(phone, idHotel));
     }
 }

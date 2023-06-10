@@ -2,8 +2,10 @@ package com.quyvx.accommodationbooking.service.room;
 
 import com.quyvx.accommodationbooking.dto.RoomDto;
 import com.quyvx.accommodationbooking.exception.InvalidException;
+import com.quyvx.accommodationbooking.model.Booking;
 import com.quyvx.accommodationbooking.model.Hotel;
 import com.quyvx.accommodationbooking.model.Room;
+import com.quyvx.accommodationbooking.repository.BookingRepository;
 import com.quyvx.accommodationbooking.repository.RoomRepository;
 import com.quyvx.accommodationbooking.service.hotel.HotelService;
 import com.quyvx.accommodationbooking.service.room.RoomService;
@@ -23,6 +25,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Autowired
     private HotelService hotelService;
+    @Autowired
+    private BookingRepository bookingRepository;
 
 
     @Override
@@ -45,6 +49,25 @@ public class RoomServiceImpl implements RoomService {
             throw new InvalidException("Account with id " +idAccount+ " is not the owner of the hotel with id " + idHotel);
         }
         throw new InvalidException("Hotel is not found for the id " + idHotel);
+    }
+
+    @Override
+    public boolean isBookingInHotel(Long bookingId, Long hotelId) {
+        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+        Booking booking = optionalBooking.orElse(null);
+
+        if (booking != null) {
+            Hotel hotel = booking.getRooms().stream()
+                    .findFirst()
+                    .map(Room::getHotel)
+                    .orElse(null);
+
+            if (hotel != null && hotel.getId().equals(hotelId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

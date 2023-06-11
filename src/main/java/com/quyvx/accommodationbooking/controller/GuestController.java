@@ -47,8 +47,8 @@ public class GuestController {
 
     @GetMapping("/hotels")
     public List<HotelDto> allHotel(@RequestParam(defaultValue = "0") Integer pageNumber,
-                                        @RequestParam(defaultValue = "10") Integer pageSize,
-                                        @RequestParam(defaultValue = "assess") String sortBy
+                                   @RequestParam(defaultValue = "10") Integer pageSize,
+                                   @RequestParam(defaultValue = "assess") String sortBy
 
     ){
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());

@@ -2,7 +2,6 @@ package com.quyvx.accommodationbooking.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,7 +22,6 @@ public class Rating {
 
     private String comment;
 
-    @NotNull(message = "Please rate the hotel")
     private int score;
 
     @Column(name ="create_date", nullable = false, updatable = false)

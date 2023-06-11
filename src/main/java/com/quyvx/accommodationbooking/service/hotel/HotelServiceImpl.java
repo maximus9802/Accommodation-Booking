@@ -55,7 +55,7 @@ public class HotelServiceImpl implements HotelService{
 //    }
 
     @Override
-    public HotelDetail viewHotelDetail(Long idHotel) throws InvalidException {
+    public HotelDetail viewHotelDetail(Long idHotel) throws InvalidException { //this method use for guest
         List<String> roomType =  roomRepository.findDistinctRoomTypeByHotelId(idHotel);
         Optional<Hotel> hotel = hotelRepository.findById(idHotel);
         if(hotel.isPresent()){

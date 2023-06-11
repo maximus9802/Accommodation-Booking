@@ -2,10 +2,12 @@ package com.quyvx.accommodationbooking.controller;
 
 import com.quyvx.accommodationbooking.dto.BookingDto;
 import com.quyvx.accommodationbooking.dto.Message;
+import com.quyvx.accommodationbooking.dto.RatingDto;
 import com.quyvx.accommodationbooking.dto.RoomDto;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.service.account.AccountService;
 import com.quyvx.accommodationbooking.service.booking.BookingService;
+import com.quyvx.accommodationbooking.service.rating.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +22,8 @@ public class CustomerController {
     private AccountService accountService;
     @Autowired
     private BookingService bookingService;
+    @Autowired
+    private RatingService ratingService;
 
     @PostMapping("/{id}/booking/new")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
@@ -35,8 +39,15 @@ public class CustomerController {
         return ResponseEntity.ok(bookingService.allBooking(accountId));
     }
 
-
-
+    @PostMapping("/{id}/{idBooking}/{roomId}/newRating")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<Message> newRating(@PathVariable("id") Long idAccount,
+                                             @PathVariable("idBooking") Long idBooking,
+                                             @PathVariable("roomId") Long roomId,
+                                             @RequestBody RatingDto ratingDto
+    ) throws Exception {
+        return ResponseEntity.ok(ratingService.newRating(idAccount, roomId, idBooking, ratingDto));
+    }
 
 
 }

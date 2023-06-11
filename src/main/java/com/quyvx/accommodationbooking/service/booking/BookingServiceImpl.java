@@ -147,5 +147,4 @@ public class BookingServiceImpl implements  BookingService{
             return bookingDtos;
         }
     }
-
 }

@@ -72,8 +72,8 @@ public class OwnerController {
     @PostMapping("/{id}/{idHotel}/new_room")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
     public ResponseEntity<String> createRoom(@PathVariable("id") Long idAccount,
-                             @PathVariable("idHotel") Long idHotel,
-                             @RequestBody RoomDto roomDto
+                                             @PathVariable("idHotel") Long idHotel,
+                                             @RequestBody RoomDto roomDto
     ) throws InvalidException {
         return ResponseEntity.ok(roomService.save(idAccount, idHotel, roomDto));
     }
@@ -81,9 +81,18 @@ public class OwnerController {
     @GetMapping("/{id}/{idHotel}/booking")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
     public ResponseEntity<List<BookingDto>> searchBookingByPhone(@PathVariable("id") Long idAccount,
-                            @PathVariable("idHotel") Long idHotel,
-                            @RequestParam String phone
+                                                                 @PathVariable("idHotel") Long idHotel,
+                                                                 @RequestParam String phone
     ) throws InvalidException {
         return ResponseEntity.ok(bookingService.searchByPhoneCustomer(phone, idHotel));
     }
+//
+//    @GetMapping("/{id}/{idHotel}/details")
+//    @PreAuthorize("hasAuthority('ROLE_OWNER')")
+//    public ResponseEntity<List<RoomDto>> detailsHotel(@PathVariable("id") Long idAccount,
+//                                                      @PathVariable("idHotel") Long idHotel
+//
+//    ) throws InvalidException {
+//        return null;
+//    }
 }

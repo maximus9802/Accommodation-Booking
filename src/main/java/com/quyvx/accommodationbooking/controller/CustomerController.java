@@ -25,28 +25,37 @@ public class CustomerController {
     @Autowired
     private RatingService ratingService;
 
-    @PostMapping("/{id}/booking/new")
+    @PostMapping("/{idAccount}/booking/new")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<Message> createBooking(@PathVariable("id") Long accountId,
+    public ResponseEntity<Message> createBooking(@PathVariable("idAccount") Long accountId,
                                                  @RequestBody BookingDto bookingDto
     ) throws InvalidException {
         return ResponseEntity.ok(bookingService.newBooking(accountId, bookingDto));
     }
 
-    @GetMapping("/{id}/booking/all")
+    @GetMapping("/{idAccount}/booking/all")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<List<BookingDto>> allBooking(@PathVariable("id") Long accountId) throws InvalidException {
+    public ResponseEntity<List<BookingDto>> allBooking(@PathVariable("idAccount") Long accountId) throws InvalidException {
         return ResponseEntity.ok(bookingService.allBooking(accountId));
     }
 
-    @PostMapping("/{id}/{idBooking}/{roomId}/newRating")
+    @PostMapping("/{idAccount}/{idBooking}/{roomId}/newRating")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<Message> newRating(@PathVariable("id") Long idAccount,
+    public ResponseEntity<Message> newRating(@PathVariable("idAccount") Long idAccount,
                                              @PathVariable("idBooking") Long idBooking,
                                              @PathVariable("roomId") Long roomId,
                                              @RequestBody RatingDto ratingDto
     ) throws Exception {
         return ResponseEntity.ok(ratingService.newRating(idAccount, roomId, idBooking, ratingDto));
+    }
+
+    @DeleteMapping("/{idAccount}/{idBooking}/deleteRating")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<Message> deleteRating(@PathVariable("idAccount") Long idAccount,
+                                                @PathVariable("idBooking") Long idBooking,
+                                                @RequestParam("idRating") Long idRating
+    ) throws Exception {
+        return ResponseEntity.ok(ratingService.deleteRating(idAccount, idBooking, idRating));
     }
 
 

@@ -6,9 +6,11 @@ import com.quyvx.accommodationbooking.dto.auth.RegisterRequest;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.exception.UsernameAlreadyExistsException;
 import com.quyvx.accommodationbooking.model.Account;
+import com.quyvx.accommodationbooking.model.RefreshToken;
 import com.quyvx.accommodationbooking.repository.AccountRepository;
 import com.quyvx.accommodationbooking.service.account.AccountService;
 import com.quyvx.accommodationbooking.service.jwt.JwtService;
+import com.quyvx.accommodationbooking.service.jwt.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +26,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final AccountService accountService;
+    private final RefreshTokenService refreshTokenService;
     public AuthenticationResponse register(RegisterRequest request) throws Exception {
         if(accountService.existsUsername(request.getUsername())){
             throw new UsernameAlreadyExistsException("Username already exists!");
@@ -56,8 +59,10 @@ public class AuthenticationService {
             var user = accountRepository.findByUsername(request.getUsername())
                     .orElseThrow();
             var jwtToken = jwtService.generateToken(user);
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(request.getUsername());
             return AuthenticationResponse.builder()
                     .token(jwtToken)
+                    .refreshToken(refreshToken.getToken())
                     .accountId(user.getId())
                     .build();
         } catch (Exception ex){

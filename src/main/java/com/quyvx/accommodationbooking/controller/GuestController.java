@@ -5,11 +5,15 @@ import com.quyvx.accommodationbooking.dto.HotelDto;
 import com.quyvx.accommodationbooking.dto.RoomDto;
 import com.quyvx.accommodationbooking.dto.auth.AuthenticationRequest;
 import com.quyvx.accommodationbooking.dto.auth.AuthenticationResponse;
+import com.quyvx.accommodationbooking.dto.auth.RefreshTokenRequest;
 import com.quyvx.accommodationbooking.dto.auth.RegisterRequest;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.Hotel;
+import com.quyvx.accommodationbooking.model.RefreshToken;
 import com.quyvx.accommodationbooking.service.auth.AuthenticationService;
 import com.quyvx.accommodationbooking.service.hotel.HotelService;
+import com.quyvx.accommodationbooking.service.jwt.JwtService;
+import com.quyvx.accommodationbooking.service.jwt.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +34,8 @@ public class GuestController {
     @Autowired
     private HotelService hotelService;
     private final AuthenticationService authenticationService;
+    private final RefreshTokenService refreshTokenService;
+    private final JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
@@ -77,5 +83,19 @@ public class GuestController {
         return ResponseEntity.ok(hotelService.viewHotelDetail(idHotel));
     }
 
-
+    @PostMapping("/refreshToken")
+    public AuthenticationResponse refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest){
+        return refreshTokenService.findByRefreshToken(refreshTokenRequest.getRefreshToken())
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getAccount)
+                .map(account -> {
+                    String token = jwtService.generateToken(account);
+                    return AuthenticationResponse.builder()
+                            .token(token)
+                            .refreshToken(refreshTokenRequest.getRefreshToken())
+                            .accountId(account.getId())
+                            .build();
+                }).orElseThrow(()-> new RuntimeException(
+                        "Refresh token is not database!"));
+    }
 }

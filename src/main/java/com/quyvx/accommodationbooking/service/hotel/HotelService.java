@@ -3,6 +3,7 @@ package com.quyvx.accommodationbooking.service.hotel;
 import com.quyvx.accommodationbooking.dto.HotelDetail;
 import com.quyvx.accommodationbooking.dto.HotelDto;
 import com.quyvx.accommodationbooking.dto.Message;
+import com.quyvx.accommodationbooking.dto.NotificationDto;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.Hotel;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 public interface HotelService {
 
-    Message save(Long id, HotelDto hotelDto);
+    NotificationDto save(Long id, HotelDto hotelDto) throws InvalidException;
 
     HotelDetail viewHotelDetail(Long idHotel) throws InvalidException;
 

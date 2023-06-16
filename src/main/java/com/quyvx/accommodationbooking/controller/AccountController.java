@@ -2,6 +2,7 @@ package com.quyvx.accommodationbooking.controller;
 
 import com.quyvx.accommodationbooking.dto.AccountDto;
 import com.quyvx.accommodationbooking.dto.Message;
+import com.quyvx.accommodationbooking.dto.NotificationDto;
 import com.quyvx.accommodationbooking.dto.PassUser;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.service.account.AccountService;
@@ -21,15 +22,15 @@ public class AccountController {
 
     @PutMapping("/{id}/update")
     @PreAuthorize("hasAuthority('ROLE_OWNER', 'ROLE_CUSTOMER')")
-    public ResponseEntity<Message> updateInfo(@PathVariable("id") Long id,
-                                              @RequestBody AccountDto accountDto
+    public ResponseEntity<NotificationDto> updateInfo(@PathVariable("id") Long id,
+                                                      @RequestBody AccountDto accountDto
     ) throws InvalidException {
         return ResponseEntity.ok(accountService.updateAccount(id, accountDto));
     }
 
     @PutMapping("/{id}/changePassword")
     @PreAuthorize("hasAuthority('ROLE_OWNER', 'ROLE_CUSTOMER')")
-    public ResponseEntity<Message> changePassword(@PathVariable("id") Long id,
+    public ResponseEntity<NotificationDto> changePassword(@PathVariable("id") Long id,
                                                   @RequestBody PassUser passUser
     ) throws InvalidException {
         return ResponseEntity.ok(accountService.changePassword(id, passUser));
@@ -37,7 +38,7 @@ public class AccountController {
 
     @PutMapping("/{id}/changeUsername")
     @PreAuthorize("hasAuthority('ROLE_OWNER', 'ROLE_CUSTOMER')")
-    public ResponseEntity<Message> changeUsername(@PathVariable("id") Long id,
+    public ResponseEntity<NotificationDto> changeUsername(@PathVariable("id") Long id,
                                                   @RequestBody PassUser passUser
     ) throws InvalidException {
         return ResponseEntity.ok(accountService.changeUsername(id, passUser));

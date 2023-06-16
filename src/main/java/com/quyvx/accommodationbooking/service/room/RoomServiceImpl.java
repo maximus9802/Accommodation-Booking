@@ -1,11 +1,14 @@
 package com.quyvx.accommodationbooking.service.room;
 
+import com.quyvx.accommodationbooking.dto.NotificationDto;
 import com.quyvx.accommodationbooking.dto.RoomDto;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.Booking;
 import com.quyvx.accommodationbooking.model.Hotel;
+import com.quyvx.accommodationbooking.model.Notification;
 import com.quyvx.accommodationbooking.model.Room;
 import com.quyvx.accommodationbooking.repository.BookingRepository;
+import com.quyvx.accommodationbooking.repository.NotificationRepository;
 import com.quyvx.accommodationbooking.repository.RoomRepository;
 import com.quyvx.accommodationbooking.service.hotel.HotelService;
 import com.quyvx.accommodationbooking.service.room.RoomService;
@@ -22,15 +25,16 @@ public class RoomServiceImpl implements RoomService {
 
     @Autowired
     private RoomRepository roomRepository;
-
     @Autowired
     private HotelService hotelService;
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
 
     @Override
-    public String save(Long idAccount, Long idHotel, RoomDto roomDto) throws InvalidException {
+    public NotificationDto save(Long idAccount, Long idHotel, RoomDto roomDto) throws InvalidException {
         Optional<Hotel> hotel = hotelService.findById(idHotel);
         if(hotel.isPresent()){
             if(Objects.equals(hotel.get().getAccount().getId(), idAccount)){
@@ -44,7 +48,19 @@ public class RoomServiceImpl implements RoomService {
                     newRoom.setImages(roomDto.getImages());
                     roomRepository.save(newRoom);
                 }
-                return "New rooms have been added!";
+                var noti = Notification
+                        .builder()
+                        .account(hotel.get().getAccount())
+                        .hotel(hotel.get())
+                        .message("New rooms have been added!")
+                        .build();
+                notificationRepository.save(noti);
+                return NotificationDto
+                        .builder()
+                        .message("New rooms have been added!")
+                        .hotelId(hotel.get().getId())
+                        .accountId(idAccount)
+                        .build();
             }
             throw new InvalidException("Account with id " +idAccount+ " is not the owner of the hotel with id " + idHotel);
         }

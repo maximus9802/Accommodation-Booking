@@ -1,9 +1,6 @@
 package com.quyvx.accommodationbooking.controller;
 
-import com.quyvx.accommodationbooking.dto.BookingDto;
-import com.quyvx.accommodationbooking.dto.HotelDto;
-import com.quyvx.accommodationbooking.dto.Message;
-import com.quyvx.accommodationbooking.dto.RoomDto;
+import com.quyvx.accommodationbooking.dto.*;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.Hotel;
 import com.quyvx.accommodationbooking.service.account.AccountService;
@@ -37,10 +34,10 @@ public class OwnerController {
 
     @PostMapping("/{id}/newHotel")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
-    public ResponseEntity<Message> createHotel(@PathVariable("id") Long id,
-                                               @RequestBody @Valid HotelDto hotelDto
+    public ResponseEntity<NotificationDto> createHotel(@PathVariable("id") Long accountId,
+                                                       @RequestBody @Valid HotelDto hotelDto
     )throws Exception {
-        return ResponseEntity.ok(hotelService.save(id, hotelDto));
+        return ResponseEntity.ok(hotelService.save(accountId, hotelDto));
     }
 
     @GetMapping("/{id}/allHotel")
@@ -71,7 +68,7 @@ public class OwnerController {
 
     @PostMapping("/{id}/{idHotel}/new_room")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
-    public ResponseEntity<String> createRoom(@PathVariable("id") Long idAccount,
+    public ResponseEntity<NotificationDto> createRoom(@PathVariable("id") Long idAccount,
                                              @PathVariable("idHotel") Long idHotel,
                                              @RequestBody RoomDto roomDto
     ) throws InvalidException {

@@ -2,6 +2,7 @@ package com.quyvx.accommodationbooking.service.booking;
 
 import com.quyvx.accommodationbooking.dto.BookingDto;
 import com.quyvx.accommodationbooking.dto.Message;
+import com.quyvx.accommodationbooking.dto.NotificationDto;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.*;
 import com.quyvx.accommodationbooking.repository.*;
@@ -30,9 +31,11 @@ public class BookingServiceImpl implements  BookingService{
     private HotelRepository hotelRepository;
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Override
-    public Message newBooking(Long id, BookingDto bookingDto) throws InvalidException {
+    public NotificationDto newBooking(Long id, BookingDto bookingDto) throws InvalidException {
         Optional<Account> optionalAccount = accountRepository.findById(id);
         if(optionalAccount.isPresent()){
             Account account = optionalAccount.get();
@@ -41,7 +44,10 @@ public class BookingServiceImpl implements  BookingService{
             for(String roomType : bookingDto.getRooms().keySet()){
                 List<Room> rooms = roomRepository.findByHotelIdAndRoomType(bookingDto.getHotelId(), roomType);
                 if(rooms.isEmpty()){
-                    return new Message("No room type " + roomType);
+                    return NotificationDto
+                            .builder()
+                            .message("The hotel does not have rooms of this type. Retry!")
+                            .build();
                 }
 
                 Iterator<Room> iterator = rooms.iterator();
@@ -61,7 +67,10 @@ public class BookingServiceImpl implements  BookingService{
                 }
 
                 if(rooms.size() < bookingDto.getRooms().get(roomType)){
-                    return new Message("Not enough room for room type " + roomType);
+                    return NotificationDto
+                            .builder()
+                            .message("The hotel does not have enough rooms of this type. Retry!")
+                            .build();
                 }
 
                 for(int i =0; i<bookingDto.getRooms().get(roomType); i++){
@@ -90,8 +99,20 @@ public class BookingServiceImpl implements  BookingService{
             for(DateRent dateRent : dateRents){
                 dateRentRepository.save(dateRent);
             }
-            bookingRepository.save(booking);
-            return new Message("Dat phong thanh cong!");
+            Booking temp = bookingRepository.save(booking);
+            var noti = Notification
+                    .builder()
+                    .booking(temp)
+                    .message("Successful booking!")
+                    .account(account)
+                    .build();
+            notificationRepository.save(noti);
+            return NotificationDto
+                    .builder()
+                    .accountId(account.getId())
+                    .bookingId(temp.getId())
+                    .message("Successful booking!")
+                    .build();
         } throw new InvalidException("Account is not found for the id " + id);
     }
 

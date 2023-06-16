@@ -1,12 +1,10 @@
 package com.quyvx.accommodationbooking.service.rating;
 
 import com.quyvx.accommodationbooking.dto.Message;
+import com.quyvx.accommodationbooking.dto.NotificationDto;
 import com.quyvx.accommodationbooking.dto.RatingDto;
 import com.quyvx.accommodationbooking.model.*;
-import com.quyvx.accommodationbooking.repository.BookingRepository;
-import com.quyvx.accommodationbooking.repository.HotelRepository;
-import com.quyvx.accommodationbooking.repository.RatingRepository;
-import com.quyvx.accommodationbooking.repository.RoomRepository;
+import com.quyvx.accommodationbooking.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +20,10 @@ public class RatingServiceImpl implements  RatingService{
     private RatingRepository ratingRepository;
     @Autowired
     private HotelRepository hotelRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
     @Override
-    public Message newRating(Long idAccount, Long roomId, Long idBooking, RatingDto ratingDto) throws Exception {
+    public NotificationDto newRating(Long idAccount, Long roomId, Long idBooking, RatingDto ratingDto) throws Exception {
         Optional<Booking> bookingOptional = bookingRepository.findById(idBooking);
         if(bookingOptional.isPresent()){
             Booking booking = bookingOptional.get();
@@ -55,15 +55,29 @@ public class RatingServiceImpl implements  RatingService{
 
                     roomRepository.save(room);
                     hotelRepository.save(hotel);
-                    ratingRepository.save(rating);
-                    return new Message("Rating successful!");
+
+                    Rating temp = ratingRepository.save(rating);
+                    var noti = Notification
+                            .builder()
+                            .message("Rating successful!")
+                            .account(booking.getAccount())
+                            .rating(temp)
+                            .build();
+                    notificationRepository.save(noti);
+
+                    return NotificationDto
+                            .builder()
+                            .accountId(idAccount)
+                            .message("Rating successful!")
+                            .ratingId(temp.getId())
+                            .build();
                 } throw new Exception("Invalid Room");
             } throw new Exception("This is not your booking!");
         } throw new Exception("Invalid Booking");
     }
 
     @Override
-    public Message deleteRating(Long idAccount, Long idBooking, Long idRating) throws Exception {
+    public NotificationDto deleteRating(Long idAccount, Long idBooking, Long idRating) throws Exception {
         Optional<Booking> bookingOptional = bookingRepository.findById(idBooking);
         if(bookingOptional.isPresent()){
             Booking booking = bookingOptional.get();
@@ -98,8 +112,18 @@ public class RatingServiceImpl implements  RatingService{
                     roomRepository.save(room);
                     hotelRepository.save(hotel);
                     ratingRepository.deleteById(idRating);
-                    return new Message("Delete successful!");
-                } throw new Exception("Invalid Rating.");
+                    var noti = Notification
+                            .builder()
+                            .message("Delete rating successful!")
+                            .account(booking.getAccount())
+                            .build();
+                    notificationRepository.save(noti);
+                    return NotificationDto
+                            .builder()
+                            .message("Delete rating successful!")
+                            .accountId(idAccount)
+                            .build();
+                } throw new Exception("Invalid rating.");
             } throw new Exception("This is not your booking.");
         } throw new Exception("Invalid Booking.");
 

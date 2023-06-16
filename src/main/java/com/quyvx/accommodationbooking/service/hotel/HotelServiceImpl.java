@@ -1,14 +1,13 @@
 package com.quyvx.accommodationbooking.service.hotel;
 
-import com.quyvx.accommodationbooking.dto.HotelDetail;
-import com.quyvx.accommodationbooking.dto.HotelDto;
-import com.quyvx.accommodationbooking.dto.Message;
-import com.quyvx.accommodationbooking.dto.RoomDto;
+import com.quyvx.accommodationbooking.dto.*;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.Account;
 import com.quyvx.accommodationbooking.model.Hotel;
+import com.quyvx.accommodationbooking.model.Notification;
 import com.quyvx.accommodationbooking.model.Room;
 import com.quyvx.accommodationbooking.repository.HotelRepository;
+import com.quyvx.accommodationbooking.repository.NotificationRepository;
 import com.quyvx.accommodationbooking.repository.RoomRepository;
 import com.quyvx.accommodationbooking.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,21 +28,39 @@ public class HotelServiceImpl implements HotelService{
     private AccountService accountService;
     @Autowired
     private RoomRepository roomRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Override
-    public Message save(Long id, HotelDto hotelDto) {
+    public NotificationDto save(Long id, HotelDto hotelDto) throws InvalidException {
         Optional<Account> account = accountService.findById(id);
 
-        Hotel hotel = new Hotel();
-        hotel.setName(hotelDto.getNameHotel());
-        hotel.setLocation(hotelDto.getLocation());
-        hotel.setShortDescription(hotelDto.getShortDescription());
-        hotel.setDetailDescription(hotelDto.getDetailDescription());
-        hotel.setAssess(hotelDto.getAssess());
-        hotel.setAvatarHotel(hotelDto.getAvatarHotel());
-        hotel.setAccount(account.get());
-        hotelRepository.save(hotel);
-        return new Message("New hotel added!");
+        if(account.isPresent()){
+            Hotel hotel = new Hotel();
+            hotel.setName(hotelDto.getNameHotel());
+            hotel.setLocation(hotelDto.getLocation());
+            hotel.setShortDescription(hotelDto.getShortDescription());
+            hotel.setDetailDescription(hotelDto.getDetailDescription());
+            hotel.setAssess(hotelDto.getAssess());
+            hotel.setAvatarHotel(hotelDto.getAvatarHotel());
+            hotel.setAccount(account.get());
+
+            Hotel temp = hotelRepository.save(hotel);
+
+            var noti = Notification
+                    .builder()
+                    .message("You have successfully added hotel " + hotelDto.getNameHotel())
+                    .account(account.get())
+                    .hotel(temp)
+                    .build();
+            notificationRepository.save(noti);
+            return NotificationDto
+                    .builder()
+                    .hotelId(temp.getId())
+                    .message("You have successfully added hotel " + hotelDto.getNameHotel())
+                    .accountId(id)
+                    .build();
+        } throw new InvalidException("Account is not found" + id);
     }
 
 //    @Override

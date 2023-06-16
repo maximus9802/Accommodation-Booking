@@ -1,7 +1,11 @@
 package com.quyvx.accommodationbooking.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.util.Date;
 
 @Data
 @Builder
@@ -31,4 +35,8 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "rating_id")
     private Rating rating;
+
+    @CreationTimestamp
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date createDate;
 }

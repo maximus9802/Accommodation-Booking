@@ -1,9 +1,6 @@
 package com.quyvx.accommodationbooking.controller;
 
-import com.quyvx.accommodationbooking.dto.BookingDto;
-import com.quyvx.accommodationbooking.dto.Message;
-import com.quyvx.accommodationbooking.dto.RatingDto;
-import com.quyvx.accommodationbooking.dto.RoomDto;
+import com.quyvx.accommodationbooking.dto.*;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.service.account.AccountService;
 import com.quyvx.accommodationbooking.service.booking.BookingService;
@@ -27,8 +24,8 @@ public class CustomerController {
 
     @PostMapping("/{idAccount}/booking/new")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<Message> createBooking(@PathVariable("idAccount") Long accountId,
-                                                 @RequestBody BookingDto bookingDto
+    public ResponseEntity<NotificationDto> createBooking(@PathVariable("idAccount") Long accountId,
+                                                         @RequestBody BookingDto bookingDto
     ) throws InvalidException {
         return ResponseEntity.ok(bookingService.newBooking(accountId, bookingDto));
     }
@@ -41,7 +38,7 @@ public class CustomerController {
 
     @PostMapping("/{idAccount}/{idBooking}/{roomId}/newRating")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<Message> newRating(@PathVariable("idAccount") Long idAccount,
+    public ResponseEntity<NotificationDto> newRating(@PathVariable("idAccount") Long idAccount,
                                              @PathVariable("idBooking") Long idBooking,
                                              @PathVariable("roomId") Long roomId,
                                              @RequestBody RatingDto ratingDto
@@ -51,7 +48,7 @@ public class CustomerController {
 
     @DeleteMapping("/{idAccount}/{idBooking}/deleteRating")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<Message> deleteRating(@PathVariable("idAccount") Long idAccount,
+    public ResponseEntity<NotificationDto> deleteRating(@PathVariable("idAccount") Long idAccount,
                                                 @PathVariable("idBooking") Long idBooking,
                                                 @RequestParam("idRating") Long idRating
     ) throws Exception {

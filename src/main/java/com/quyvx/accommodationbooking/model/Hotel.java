@@ -41,6 +41,9 @@ public class Hotel {
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
     private List<Room> rooms;
 
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
+    private List<Notification> notifications;
+
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;

@@ -50,6 +50,8 @@ public class Booking {
     @Column(name = "description")
     private String description;
 
+    private String status;
+
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<Rating> ratings;
 
@@ -59,4 +61,11 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<Notification> notifications;
+
+    public Booking(){
+        this.status  = "accepted";
+    }
 }

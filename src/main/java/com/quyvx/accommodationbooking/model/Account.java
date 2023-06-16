@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
@@ -33,11 +32,20 @@ public class Account implements UserDetails {
 
     private String phone;
 
+    private int score;
+
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Booking> bookings;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Hotel> hotels;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Notification> notifications;
+
+    public Account(){
+        this.score = 100;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

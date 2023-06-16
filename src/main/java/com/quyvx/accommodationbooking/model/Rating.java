@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -41,4 +42,7 @@ public class Rating {
     @ManyToOne
     @JoinColumn(name = "booking_id")
     private Booking booking;
+
+    @OneToMany(mappedBy = "rating", cascade = CascadeType.ALL)
+    private List<Notification> notifications;
 }

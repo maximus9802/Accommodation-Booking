@@ -83,6 +83,16 @@ public class OwnerController {
     ) throws InvalidException {
         return ResponseEntity.ok(bookingService.searchByPhoneCustomer(phone, idHotel));
     }
+
+    @PutMapping("/{idAccount}/{idHotel}/booking")
+    @PreAuthorize("hasAuthority('ROLE_OWNER')")
+    public ResponseEntity<NotificationDto> updateStatusBooking(@PathVariable("idAccount")Long idAccount,
+                                                               @PathVariable("idHotel") Long idHotel,
+                                                               @RequestParam Long idBooking,
+                                                               @RequestParam String status
+    ) throws Exception {
+        return ResponseEntity.ok(bookingService.changeStatus(idAccount, idHotel, idBooking, status));
+    }
 //
 //    @GetMapping("/{id}/{idHotel}/details")
 //    @PreAuthorize("hasAuthority('ROLE_OWNER')")

@@ -5,6 +5,7 @@ import com.quyvx.accommodationbooking.dto.Message;
 import com.quyvx.accommodationbooking.dto.NotificationDto;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.Booking;
+import com.quyvx.accommodationbooking.model.Notification;
 
 import java.util.List;
 
@@ -15,5 +16,7 @@ public interface BookingService {
     List<BookingDto> allBooking(Long accountId);
 
     List<BookingDto> searchByPhoneCustomer(String phoneCustomer, Long hotelId) throws InvalidException;
+
+    NotificationDto changeStatus(Long idAccount, Long idHotel, Long idBooking, String status) throws Exception;
 
 }

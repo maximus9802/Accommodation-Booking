@@ -39,6 +39,7 @@ public class AuthenticationService {
                 .name(request.getName())
                 .address(request.getAddress())
                 .phone(request.getPhone())
+                .score(100)
                 .build();
         accountRepository.save(user);
         var jwtToken = jwtService.generateToken(user);

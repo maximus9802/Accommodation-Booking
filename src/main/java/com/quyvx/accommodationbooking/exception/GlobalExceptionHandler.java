@@ -1,5 +1,6 @@
 package com.quyvx.accommodationbooking.exception;
 
+import com.quyvx.accommodationbooking.dto.ErrorCode;
 import com.quyvx.accommodationbooking.dto.ErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,26 +41,26 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorResponse handleUsernameAlreadyExistsException(UsernameAlreadyExistsException ex) {
-        return new ErrorResponse(ex.getMessage());
+        return new ErrorResponse(ex.getMessage(), ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorResponse handleInvalidException(InvalidException ex){
-        return  new ErrorResponse(ex.getMessage());
+        return  new ErrorResponse(ex.getMessage(), ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorResponse exception(Exception ex){
-        return new ErrorResponse(ex.getMessage());
+        return new ErrorResponse(ex.getMessage(), ErrorCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseStatusException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getReason());
-        return ResponseEntity.status(ex.getStatusCode()).body(errorResponse);
-    }
+//    @ExceptionHandler(ResponseStatusException.class)
+//    public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseStatusException ex) {
+//        ErrorResponse errorResponse = new ErrorResponse(ex.getReason());
+//        return ResponseEntity.status(ex.getStatusCode()).body(errorResponse);
+//    }
 }

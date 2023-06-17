@@ -55,5 +55,13 @@ public class CustomerController {
         return ResponseEntity.ok(ratingService.deleteRating(idAccount, idBooking, idRating));
     }
 
-
+    @PutMapping("/{accountId}/{idBooking}/updateRating")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<NotificationDto> updateRating(@PathVariable("accountId") Long accountId,
+                                                        @PathVariable("idBooking") Long idBooking,
+                                                        @RequestParam("idRating") Long idRating,
+                                                        @RequestBody RatingDto ratingDto
+    ) throws Exception {
+        return ResponseEntity.ok(ratingService.updateRating(accountId, idBooking, idRating, ratingDto));
+    }
 }

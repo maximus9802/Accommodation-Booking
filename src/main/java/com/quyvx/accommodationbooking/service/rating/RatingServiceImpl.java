@@ -129,5 +129,53 @@ public class RatingServiceImpl implements  RatingService{
 
     }
 
+    @Override
+    public NotificationDto updateRating(Long idAccount, Long idBooking, Long idRating, RatingDto ratingDto) throws Exception {
+        Optional<Booking> bookingOptional = bookingRepository.findById(idBooking);
+        if(bookingOptional.isPresent()){
+            Booking booking = bookingOptional.get();
+            if(booking.getAccount().getId() == idAccount){
+                Optional<Rating> ratingOptional = ratingRepository.findById(idRating);
+                if(ratingOptional.isPresent()){
+                    Rating rating = ratingOptional.get();
+                    rating.setId(idRating);
+                    Optional<Room> roomOptional = roomRepository.findById(rating.getRoom().getId());
+                    Room room = roomOptional.get();
+                    Hotel hotel = room.getHotel();
+
+                    float currentScore = room.getScore();
+                    int currentNumberRating = room.getNumberRating();
+                    float newScore = (currentScore*currentNumberRating - rating.getScore() + ratingDto.getScore())/currentNumberRating;
+                    room.setScore(newScore);
+
+                    currentScore = hotel.getScore();
+                    currentNumberRating = hotel.getNumberRating();
+                    newScore = (currentScore*currentNumberRating - rating.getScore() + ratingDto.getScore())/currentNumberRating;
+                    hotel.setScore(newScore);
+
+                    rating.setScore(ratingDto.getScore());
+                    rating.setComment(rating.getComment());
+
+                    roomRepository.save(room);
+                    hotelRepository.save(hotel);
+
+                    Rating temp = ratingRepository.save(rating);
+                    var noti = Notification
+                            .builder()
+                            .rating(temp)
+                            .message("Update rating successful!")
+                            .account(booking.getAccount())
+                            .build();
+                    return NotificationDto
+                            .builder()
+                            .accountId(booking.getAccount().getId())
+                            .message("Update rating successful!")
+                            .ratingId(temp.getId())
+                            .build();
+                } throw new Exception("Invalid Rating");
+            } throw new Exception("This is not your booking!");
+        } throw new Exception("Invalid Booking");
+    }
+
 
 }

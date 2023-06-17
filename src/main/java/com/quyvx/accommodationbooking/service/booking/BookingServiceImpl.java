@@ -168,4 +168,39 @@ public class BookingServiceImpl implements  BookingService{
             return bookingDtos;
         }
     }
+
+    @Override
+    public NotificationDto changeStatus(Long idAccount, Long idHotel, Long idBooking, String status) throws Exception {
+        Optional<Account> optionalAccount = accountRepository.findById(idAccount);
+        if (optionalAccount.isPresent()){
+            Account account = optionalAccount.get();
+            Optional<Booking> optionalBooking = bookingRepository.findById(idBooking);
+            if(optionalBooking.isPresent()){
+                Booking booking = optionalBooking.get();
+                Set<Room> rooms = booking.getRooms();
+                Hotel hotel = new Hotel();
+                for(Room room : rooms){
+                    hotel = room.getHotel();
+                    break;
+                }
+                if(hotel.getId() == idHotel){
+                    booking.setStatus(status);
+                    bookingRepository.save(booking);
+
+                    var noti = Notification
+                            .builder()
+                            .message("Update status booking" + idBooking + "successful!")
+                            .account(account)
+                            .booking(booking)
+                            .build();
+                    return NotificationDto
+                            .builder()
+                            .message("Update status booking" + idBooking + "successful!")
+                            .accountId(idAccount)
+                            .bookingId(idBooking)
+                            .build();
+                } throw new Exception("This is nt your rating!");
+            } throw  new Exception("Invalid booking!");
+        } throw new Exception("Account not found.");
+    }
 }

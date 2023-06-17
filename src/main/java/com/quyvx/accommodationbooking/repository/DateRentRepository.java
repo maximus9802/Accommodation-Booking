@@ -17,5 +17,6 @@ public interface DateRentRepository extends JpaRepository<DateRent, Long> {
     @Query("SELECT dr FROM DateRent dr WHERE dr.room.id = :roomId AND dr.date = :date")
     Optional<DateRent> findByDateAndRoomId(@Param("roomId") Long id, @Param("date") Date date);
 
-
+    @Query("DELETE FROM DateRent dr WHERE dr.room.id = :roomId AND dr.date = :date")
+    void deleteByRoomIdAndDate(@Param("roomId") Long roomId, @Param("date") Date date);
 }

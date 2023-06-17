@@ -12,6 +12,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -139,6 +141,7 @@ public class BookingServiceImpl implements  BookingService{
             bookingDto.setTotalBill(booking.getTotalBill());
             bookingDto.setDateCheckIn(booking.getDateCheckIn());
             bookingDto.setDateCheckOut(booking.getDateCheckOut());
+            bookingDto.setStatus(booking.getStatus());
             bookingDtos.add(bookingDto);
         }
         return bookingDtos;
@@ -161,6 +164,7 @@ public class BookingServiceImpl implements  BookingService{
                 bookingDto.setDateCheckIn(booking.getDateCheckIn());
                 bookingDto.setDateCheckOut(booking.getDateCheckOut());
                 bookingDto.setTotalBill(booking.getTotalBill());
+                bookingDto.setStatus(booking.getStatus());
                 bookingDto.setDescription(booking.getDescription());
                 bookingDto.setListRoomId(bookingRepository.getBookingRoomIds(booking.getId()));
                 bookingDtos.add(bookingDto);
@@ -203,4 +207,145 @@ public class BookingServiceImpl implements  BookingService{
             } throw  new Exception("Invalid booking!");
         } throw new Exception("Account not found.");
     }
+
+    @Override
+    public NotificationDto cancelBookingByCustomer(Long idAccount, Long idBooking, String reason) throws Exception {
+        Optional<Account> optionalAccount = accountRepository.findById(idAccount);
+        if(optionalAccount.isPresent()){
+            Account account = optionalAccount.get();
+            Optional<Booking> optionalBooking = bookingRepository.findById(idBooking);
+            if(optionalBooking.isPresent()){
+                Booking booking = optionalBooking.get();
+                if(booking.getAccount().getId() == idAccount){
+                    if(checkDateBefore(booking.getDateCheckIn())){
+                        booking.setStatus("canceled");
+
+                        account.setScore((account.getScore()-10));
+
+                        var notiCustomer = Notification
+                                .builder()
+                                .account(account)
+                                .booking(booking)
+                                .message("Cancel booking " + booking.getId() + " successful!")
+                                .build();
+                        notificationRepository.save(notiCustomer);
+
+                        Set<Room> rooms = booking.getRooms();
+                        for (Room room: rooms){
+                            Hotel hotel = room.getHotel();
+                            Account accountOwner = room.getHotel().getAccount();
+
+                            var notiOwner = Notification
+                                    .builder()
+                                    .account(accountOwner)
+                                    .hotel(hotel)
+                                    .message("Customer canceled booking #" + booking.getId() + " .Reason: " + reason)
+                                    .build();
+                            notificationRepository.save(notiOwner);
+                        }
+
+                        for(Room room : rooms){
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(booking.getDateCheckIn());
+                            while(!calendar.getTime().after(booking.getDateCheckOut())){
+                                Date date = calendar.getTime();
+                                dateRentRepository.deleteByRoomIdAndDate(room.getId(), date);
+                                calendar.add(Calendar.DATE, 1);
+                            }
+                        }
+
+                        bookingRepository.save(booking);
+                        accountRepository.save(account);
+
+                        return NotificationDto
+                                .builder()
+                                .message("Cancel booking #" + booking.getId() + " successful!")
+                                .bookingId(booking.getId())
+                                .accountId(account.getId())
+                                .build();
+                    } throw new Exception("You cannot cancel booking #" + booking.getId() +" .Because: the time allowed to cancel has passed." );
+                } throw new Exception("This is not your booking!");
+            } throw new InvalidException("Invalid Booking");
+        } throw new InvalidException("Invalid Account");
+    }
+
+    @Override
+    public NotificationDto cancelBookingByOwner(Long idAccount, Long idHotel, Long idBooking, String reason) throws Exception {
+        Optional<Account> accountOptional = accountRepository.findById(idAccount);
+        if(accountOptional.isPresent()){
+            Account account = accountOptional.get();
+            Optional<Hotel> hotelOptional = hotelRepository.findById(idHotel);
+            if(hotelOptional.isPresent()){
+                Hotel hotel = hotelOptional.get();
+                if(hotel.getAccount().getId() == idAccount){
+                    Optional<Booking> bookingOptional = bookingRepository.findById(idBooking);
+                    if(bookingOptional.isPresent()){
+                        Booking booking = bookingOptional.get();
+                        if(checkDateAfter(booking.getDateCheckIn())){
+                            booking.setStatus("no check-in");
+                            bookingRepository.save(booking);
+
+                            Set<Room> rooms = booking.getRooms();
+                            for(Room room : rooms){
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTime(booking.getDateCheckIn());
+                                while(!calendar.getTime().after(booking.getDateCheckOut())){
+                                    Date date = calendar.getTime();
+                                    dateRentRepository.deleteByRoomIdAndDate(room.getId(), date);
+                                    calendar.add(Calendar.DATE, 1);
+                                }
+                            }
+
+                            Account accountCustomer = booking.getAccount();
+                            accountCustomer.setScore(accountCustomer.getScore()-50);
+                            accountRepository.save(accountCustomer);
+
+                            var notiOwner = Notification
+                                    .builder()
+                                    .message("You cancel booking #"+ booking.getId() + " successful!")
+                                    .account(account)
+                                    .booking(booking)
+                                    .build();
+                            notificationRepository.save(notiOwner);
+
+                            var notiCustomer = Notification
+                                    .builder()
+                                    .message("Your booking #"+ booking.getId() + " has been canceled by the hotel owner. Because: " + reason)
+                                    .account(accountCustomer)
+                                    .booking(booking)
+                                    .build();
+                            notificationRepository.save(notiCustomer);
+
+                            return  NotificationDto
+                                    .builder()
+                                    .message("You cancel booking #"+ booking.getId() + " successful!")
+                                    .accountId(account.getId())
+                                    .bookingId(booking.getId())
+                                    .build();
+
+                        } throw new Exception("You cannot change booking " + booking.getId() + " status right now!");
+                    } throw new InvalidException("Invalid Booking");
+                } throw new Exception("This is not your hotel");
+            }throw new InvalidException("Invalid Hotel");
+        }throw new InvalidException("Invalid Account!");
+    }
+
+    @Override
+    public boolean checkDateBefore(Date date) {
+        LocalDate currentDate = LocalDate.now();
+
+        LocalDate dateCheck = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if(currentDate.isBefore(dateCheck.minusDays(3))) return true;
+        else return false;
+    }
+
+    @Override
+    public boolean checkDateAfter(Date date) {
+        LocalDate currentDate = LocalDate.now();
+
+        LocalDate dateCheck = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if(currentDate.isAfter(dateCheck.plusDays(1))) return  true;
+        else return false;
+    }
+
 }

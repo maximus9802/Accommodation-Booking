@@ -24,6 +24,8 @@ public class BookingDto {
 
     private Date dateCheckOut;
 
+    private String status;
+
     private int totalBill;
 
     private String description;

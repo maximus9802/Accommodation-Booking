@@ -7,6 +7,7 @@ import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.Booking;
 import com.quyvx.accommodationbooking.model.Notification;
 
+import java.util.Date;
 import java.util.List;
 
 public interface BookingService {
@@ -19,4 +20,11 @@ public interface BookingService {
 
     NotificationDto changeStatus(Long idAccount, Long idHotel, Long idBooking, String status) throws Exception;
 
+    NotificationDto cancelBookingByCustomer(Long idAccount, Long idBooking, String reason) throws  Exception;
+
+    NotificationDto cancelBookingByOwner(Long idAccount, Long idHotel, Long idBooking, String reason) throws Exception;
+
+    boolean checkDateBefore(Date date);
+
+    boolean checkDateAfter(Date date);
 }

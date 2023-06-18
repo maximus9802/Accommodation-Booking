@@ -20,6 +20,8 @@ public interface AccountService {
 
     Optional<Account> findById(Long id);
 
+    AccountDto getInformation(Long idAccount) throws InvalidException;
+
     Account findByPhone(String phone);
 
     Account findByUsername(String username);

@@ -104,6 +104,16 @@ public class OwnerController {
         return ResponseEntity.ok(bookingService.cancelBookingByOwner(idAccount, idHotel, idBooking, reason));
     }
 
+    @GetMapping("/{idAccount}/{idHotel}/searchBooking")
+    @PreAuthorize("hasAuthority('ROLE_OWNER')")
+    public ResponseEntity<BookingDto> searchBookingById(@PathVariable("idAccount") Long idAccount,
+                                                        @PathVariable("idHotel") Long idHotel,
+                                                        @RequestParam Long idBooking
+    ) throws Exception{
+        return ResponseEntity.ok(bookingService.searchBookingById(idAccount, idHotel, idBooking));
+    }
+
+
 //
 //    @GetMapping("/{id}/{idHotel}/details")
 //    @PreAuthorize("hasAuthority('ROLE_OWNER')")

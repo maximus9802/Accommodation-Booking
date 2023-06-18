@@ -331,6 +331,75 @@ public class BookingServiceImpl implements  BookingService{
     }
 
     @Override
+    public BookingDto searchBookingById(Long idCustomer, Long idBooking) throws Exception {
+        Optional<Account> optionalAccount = accountRepository.findById(idCustomer);
+        if(optionalAccount.isPresent()){
+            Account account = optionalAccount.get();
+            Optional<Booking> optionalBooking = bookingRepository.findById(idBooking);
+            if(optionalBooking.isPresent()){
+                Booking booking = optionalBooking.get();
+                if(booking.getAccount().getId() == idCustomer){
+                    Hotel hotel = new Hotel();
+                    Set<Room> rooms = booking.getRooms();
+                    HashMap<String, Integer> hashMap = new HashMap<>();
+
+                    for (Room room :rooms){
+                        hotel = room.getHotel();
+                        break;
+                    }
+
+                    for(Room room: rooms){
+                        hashMap.put(room.getRoomType(), hashMap.getOrDefault(room.getRoomType(), 0) +1);
+                    }
+
+                    return BookingDto
+                            .builder()
+                            .dateCheckIn(booking.getDateCheckIn())
+                            .dateCheckOut(booking.getDateCheckOut())
+                            .description(booking.getDescription())
+                            .hotelId(hotel.getId())
+                            .nameHotel(hotel.getName())
+                            .rooms(hashMap)
+                            .status(booking.getStatus())
+                            .totalBill(booking.getTotalBill())
+                            .build();
+                } throw new Exception("Sorry! This booking #" + idBooking + " is not yours." );
+            } throw new InvalidException("Invalid booking!");
+        } throw new InvalidException("Invalid account!");
+    }
+
+    @Override
+    public BookingDto searchBookingById(Long idOwner, Long idHotel, Long idBooking) throws Exception {
+        Optional<Hotel> optionalHotel = hotelRepository.findById(idHotel);
+        if(optionalHotel.isPresent()){
+            Hotel hotel = optionalHotel.get();
+            if(hotel.getAccount().getId() == idOwner){
+                Optional<Booking> bookingOptional = bookingRepository.findById(idBooking);
+                if(bookingOptional.isPresent()){
+                    Booking booking = bookingOptional.get();
+                    Account account = booking.getAccount();
+                    Set<Room> rooms = booking.getRooms();
+                    List<Long> list = new ArrayList<>();
+                    for(Room room : rooms){
+                        list.add(room.getId());
+                    }
+                    return BookingDto
+                            .builder()
+                            .dateCheckIn(booking.getDateCheckIn())
+                            .dateCheckOut(booking.getDateCheckOut())
+                            .listRoomId(list)
+                            .nameCustomer(account.getName())
+                            .phoneCustomer(account.getPhone())
+                            .description(booking.getDescription())
+                            .totalBill(booking.getTotalBill())
+                            .status(booking.getStatus())
+                            .build();
+                } throw  new InvalidException("Invalid booking #" + idBooking);
+            } throw new Exception("Sorry. This hotel #" + idHotel + " is not yours.");
+        } throw new InvalidException("Invalid Hotel");
+    }
+
+    @Override
     public boolean checkDateBefore(Date date) {
         LocalDate currentDate = LocalDate.now();
 

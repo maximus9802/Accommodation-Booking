@@ -12,6 +12,7 @@ import java.util.List;
 @ToString
 @Getter
 @Setter
+@Builder
 public class BookingDto {
 
     private HashMap<String, Integer> rooms = new HashMap<>();
@@ -32,5 +33,7 @@ public class BookingDto {
 
     private List<Long> listRoomId = new ArrayList<>();
 
+    private String nameCustomer;
 
+    private String phoneCustomer;
 }

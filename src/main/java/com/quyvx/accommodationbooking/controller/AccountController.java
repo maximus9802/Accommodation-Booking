@@ -43,4 +43,10 @@ public class AccountController {
     ) throws InvalidException {
         return ResponseEntity.ok(accountService.changeUsername(id, passUser));
     }
+
+    @GetMapping("/{idAccount}/info")
+    @PreAuthorize("hasAuthority('ROLE_OWNER', 'ROLE_CUSTOMER)")
+    public ResponseEntity<AccountDto> getInformation(@PathVariable("idAccount") Long id) throws InvalidException{
+        return ResponseEntity.ok(accountService.getInformation(id));
+    }
 }

@@ -143,6 +143,19 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
+    public AccountDto getInformation(Long idAccount) throws InvalidException {
+        Optional<Account> account = accountRepository.findById(idAccount);
+        if(account.isPresent()){
+            return AccountDto
+                    .builder()
+                    .name(account.get().getName())
+                    .phone(account.get().getPhone())
+                    .address(account.get().getAddress())
+                    .build();
+        } throw new InvalidException("Invalid Account.");
+    }
+
+    @Override
     public Account findByPhone(String phone) {
         Optional<Account> account = accountRepository.findByPhone(phone);
         if(account.isPresent()){

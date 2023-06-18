@@ -30,6 +30,13 @@ public class CustomerController {
         return ResponseEntity.ok(bookingService.newBooking(accountId, bookingDto));
     }
 
+    @GetMapping("/{idAccount}/booking")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<BookingDto> searchBookingById(@PathVariable("idAccount") Long idAccount,
+                                                        @RequestParam Long bookingId
+    ) throws Exception {
+        return ResponseEntity.ok(bookingService.searchBookingById(idAccount, bookingId));
+    }
     @GetMapping("/{idAccount}/booking/all")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<List<BookingDto>> allBooking(@PathVariable("idAccount") Long accountId) throws InvalidException {

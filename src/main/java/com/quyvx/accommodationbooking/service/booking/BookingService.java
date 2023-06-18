@@ -24,6 +24,10 @@ public interface BookingService {
 
     NotificationDto cancelBookingByOwner(Long idAccount, Long idHotel, Long idBooking, String reason) throws Exception;
 
+    BookingDto searchBookingById(Long idCustomer, Long idBooking) throws Exception;
+
+    BookingDto searchBookingById(Long idOwner, Long idHotel, Long idBooking) throws Exception;
+
     boolean checkDateBefore(Date date);
 
     boolean checkDateAfter(Date date);

@@ -51,6 +51,15 @@ public class GuestController {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
+    @GetMapping("/hotel")
+    public ResponseEntity<List<HotelDto>> searchHotelByLocation(@RequestParam(defaultValue = "VietNam") String location,
+                                                          @RequestParam(defaultValue = "0") Integer pageNumber,
+                                                          @RequestParam(defaultValue = "10") Integer pageSize,
+                                                          @RequestParam(defaultValue = "assess") String sortBy
+    ) {
+        return ResponseEntity.ok(hotelService.searchByLocation(pageNumber, pageSize, location, sortBy));
+    }
+
     @GetMapping("/hotels")
     public List<HotelDto> allHotel(@RequestParam(defaultValue = "0") Integer pageNumber,
                                    @RequestParam(defaultValue = "10") Integer pageSize,

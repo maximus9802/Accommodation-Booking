@@ -8,6 +8,7 @@ import lombok.*;
 @ToString
 @Getter
 @Setter
+@Builder
 public class HotelDto {
     private Long id;
     @NotNull(message = "Name Hotel should not be null")

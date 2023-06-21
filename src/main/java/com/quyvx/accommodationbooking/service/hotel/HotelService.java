@@ -23,4 +23,6 @@ public interface HotelService {
     Optional<Hotel> findById(Long id) throws InvalidException;
 
     Page<Hotel> findAll(Pageable pageable);
+
+    List<HotelDto> searchByLocation(Integer pageNumber, Integer pageSize, String location, String sortBy);
 }

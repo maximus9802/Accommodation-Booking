@@ -12,7 +12,9 @@ import com.quyvx.accommodationbooking.repository.RoomRepository;
 import com.quyvx.accommodationbooking.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -119,5 +121,28 @@ public class HotelServiceImpl implements HotelService{
     @Override
     public Page<Hotel> findAll(Pageable pageable) {
         return hotelRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<HotelDto> searchByLocation(Integer pageNumber, Integer pageSize, String location, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
+        Page<Hotel> hotels = hotelRepository.findByLocation(location, pageable);
+        List<HotelDto> hotelDtos = new ArrayList<>();
+        for(Hotel hotel : hotels){
+            var temp = HotelDto
+                    .builder()
+                    .id(hotel.getId())
+                    .nameHotel(hotel.getName())
+                    .location(hotel.getLocation())
+                    .avatarHotel(hotel.getAvatarHotel())
+                    .score(hotel.getScore())
+                    .assess(hotel.getAssess())
+                    .numberRating(hotel.getNumberRating())
+                    .shortDescription(hotel.getShortDescription())
+                    .detailDescription(hotel.getDetailDescription())
+                    .build();
+            hotelDtos.add(temp);
+        }
+        return hotelDtos;
     }
 }

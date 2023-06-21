@@ -64,6 +64,7 @@ public class AuthenticationService {
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .refreshToken(refreshToken.getToken())
+                    .role(user.getRole())
                     .accountId(user.getId())
                     .build();
         } catch (Exception ex){

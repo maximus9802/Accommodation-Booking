@@ -28,6 +28,7 @@ public class Account implements UserDetails {
 
     private String name;
 
+    @Column(name = "address", columnDefinition = "TEXT")
     private String address;
 
     private String phone;

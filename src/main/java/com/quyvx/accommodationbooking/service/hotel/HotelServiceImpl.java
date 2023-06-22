@@ -2,10 +2,7 @@ package com.quyvx.accommodationbooking.service.hotel;
 
 import com.quyvx.accommodationbooking.dto.*;
 import com.quyvx.accommodationbooking.exception.InvalidException;
-import com.quyvx.accommodationbooking.model.Account;
-import com.quyvx.accommodationbooking.model.Hotel;
-import com.quyvx.accommodationbooking.model.Notification;
-import com.quyvx.accommodationbooking.model.Room;
+import com.quyvx.accommodationbooking.model.*;
 import com.quyvx.accommodationbooking.repository.HotelRepository;
 import com.quyvx.accommodationbooking.repository.NotificationRepository;
 import com.quyvx.accommodationbooking.repository.RoomRepository;
@@ -34,34 +31,36 @@ public class HotelServiceImpl implements HotelService{
     private NotificationRepository notificationRepository;
 
     @Override
-    public NotificationDto save(Long id, HotelDto hotelDto) throws InvalidException {
+    public NotificationDto save(Long id, HotelDto hotelDto) throws Exception {
         Optional<Account> account = accountService.findById(id);
 
         if(account.isPresent()){
-            Hotel hotel = new Hotel();
-            hotel.setName(hotelDto.getNameHotel());
-            hotel.setLocation(hotelDto.getLocation());
-            hotel.setShortDescription(hotelDto.getShortDescription());
-            hotel.setDetailDescription(hotelDto.getDetailDescription());
-            hotel.setAssess(hotelDto.getAssess());
-            hotel.setAvatarHotel(hotelDto.getAvatarHotel());
-            hotel.setAccount(account.get());
+            if(account.get().getRole() == Role.valueOf("OWNER")){
+                Hotel hotel = new Hotel();
+                hotel.setName(hotelDto.getNameHotel());
+                hotel.setLocation(hotelDto.getLocation());
+                hotel.setShortDescription(hotelDto.getShortDescription());
+                hotel.setDetailDescription(hotelDto.getDetailDescription());
+                hotel.setAssess(hotelDto.getAssess());
+                hotel.setAvatarHotel(hotelDto.getAvatarHotel());
+                hotel.setAccount(account.get());
 
-            Hotel temp = hotelRepository.save(hotel);
+                Hotel temp = hotelRepository.save(hotel);
 
-            var noti = Notification
-                    .builder()
-                    .message("You have successfully added hotel " + hotelDto.getNameHotel())
-                    .account(account.get())
-                    .hotel(temp)
-                    .build();
-            notificationRepository.save(noti);
-            return NotificationDto
-                    .builder()
-                    .hotelId(temp.getId())
-                    .message("You have successfully added hotel " + hotelDto.getNameHotel())
-                    .accountId(id)
-                    .build();
+                var noti = Notification
+                        .builder()
+                        .message("You have successfully added hotel " + hotelDto.getNameHotel())
+                        .account(account.get())
+                        .hotel(temp)
+                        .build();
+                notificationRepository.save(noti);
+                return NotificationDto
+                        .builder()
+                        .hotelId(temp.getId())
+                        .message("You have successfully added hotel " + hotelDto.getNameHotel())
+                        .accountId(id)
+                        .build();
+            } throw new Exception("You do not have access!");
         } throw new InvalidException("Account is not found" + id);
     }
 

@@ -21,6 +21,7 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
 
     private int score;

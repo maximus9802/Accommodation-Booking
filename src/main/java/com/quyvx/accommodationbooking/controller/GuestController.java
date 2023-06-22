@@ -53,7 +53,7 @@ public class GuestController {
     }
 
     @GetMapping("/hotel")
-    public ResponseEntity<List<HotelDto>> searchHotelByLocation(@RequestParam(defaultValue = "VietNam") String location,
+    public ResponseEntity<List<HotelDto>> searchHotelByLocation(@RequestParam(defaultValue = "Vietnam") String location,
                                                           @RequestParam(defaultValue = "0") Integer pageNumber,
                                                           @RequestParam(defaultValue = "10") Integer pageSize,
                                                           @RequestParam(defaultValue = "assess") String sortBy

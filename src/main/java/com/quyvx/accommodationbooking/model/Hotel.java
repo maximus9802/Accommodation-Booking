@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+
 import java.util.List;
 
 @Getter
@@ -20,14 +21,15 @@ public class Hotel {
 
     private String name;
 
+    @Column(name = "location", columnDefinition = "TEXT")
     private String location;
 
     private float score = 0;
 
-    @Column(name = "short_description")
+    @Column(name = "short_description", columnDefinition = "TEXT")
     private String shortDescription;
 
-    @Column(name = "detail_description")
+    @Column(name = "detail_description", columnDefinition = "TEXT")
     private String detailDescription;
 
     private int assess;

@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface HotelService {
 
-    NotificationDto save(Long id, HotelDto hotelDto) throws InvalidException;
+    NotificationDto save(Long id, HotelDto hotelDto) throws Exception;
 
     HotelDetail viewHotelDetail(Long idHotel) throws InvalidException;
 

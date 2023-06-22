@@ -2,7 +2,10 @@ package com.quyvx.accommodationbooking.controller;
 
 import com.quyvx.accommodationbooking.dto.*;
 import com.quyvx.accommodationbooking.exception.InvalidException;
+import com.quyvx.accommodationbooking.model.Account;
 import com.quyvx.accommodationbooking.model.Hotel;
+import com.quyvx.accommodationbooking.model.Role;
+import com.quyvx.accommodationbooking.repository.AccountRepository;
 import com.quyvx.accommodationbooking.service.account.AccountService;
 import com.quyvx.accommodationbooking.service.booking.BookingService;
 import com.quyvx.accommodationbooking.service.hotel.HotelService;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/owner")
@@ -32,6 +36,8 @@ public class OwnerController {
     private AccountService accountService;
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @PostMapping("/{id}/newHotel")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
@@ -47,24 +53,29 @@ public class OwnerController {
                                           @RequestParam(defaultValue = "0") Integer pageNumber,
                                           @RequestParam(defaultValue = "10") Integer pageSize,
                                           @RequestParam(defaultValue = "id") String sortBy
-    ){
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
-        List<Hotel> hotels = hotelService.findByAccountId(id, pageable);
-        List<HotelDto> hotelDtos = new ArrayList<>();
-        for (Hotel hotel : hotels){
-            HotelDto tempHotel = new HotelDto();
-            tempHotel.setId(hotel.getId());
-            tempHotel.setNameHotel(hotel.getName());
-            tempHotel.setLocation(hotel.getLocation());
-            tempHotel.setScore(hotel.getScore());
-            tempHotel.setShortDescription(hotel.getShortDescription());
-            tempHotel.setDetailDescription(hotel.getDetailDescription());
-            tempHotel.setAssess(hotel.getAssess());
-            tempHotel.setAvatarHotel(hotel.getAvatarHotel());
-            tempHotel.setNumberRating(hotel.getNumberRating());
-            hotelDtos.add(tempHotel);
-        }
-        return hotelDtos;
+    ) throws Exception {
+        Optional<Account> optionalAccount = accountRepository.findById(id);
+        if(optionalAccount.isPresent()){
+            if(optionalAccount.get().getRole() == Role.OWNER){
+                Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
+                List<Hotel> hotels = hotelService.findByAccountId(id, pageable);
+                List<HotelDto> hotelDtos = new ArrayList<>();
+                for (Hotel hotel : hotels){
+                    HotelDto tempHotel = new HotelDto();
+                    tempHotel.setId(hotel.getId());
+                    tempHotel.setNameHotel(hotel.getName());
+                    tempHotel.setLocation(hotel.getLocation());
+                    tempHotel.setScore(hotel.getScore());
+                    tempHotel.setShortDescription(hotel.getShortDescription());
+                    tempHotel.setDetailDescription(hotel.getDetailDescription());
+                    tempHotel.setAssess(hotel.getAssess());
+                    tempHotel.setAvatarHotel(hotel.getAvatarHotel());
+                    tempHotel.setNumberRating(hotel.getNumberRating());
+                    hotelDtos.add(tempHotel);
+                }
+                return hotelDtos;
+            } throw new Exception("You do not have access!");
+        } throw new InvalidException("Invalid account with #" +id);
     }
 
     @PostMapping("/{id}/{idHotel}/new_room")

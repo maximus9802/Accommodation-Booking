@@ -47,7 +47,7 @@ public class Booking {
     @Column(name = "total_bill")
     private int totalBill;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     private String status;

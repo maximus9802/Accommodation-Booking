@@ -23,6 +23,7 @@ public class Room {
 
     private int price;
 
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "room_type")

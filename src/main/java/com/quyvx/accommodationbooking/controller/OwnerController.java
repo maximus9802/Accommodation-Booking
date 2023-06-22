@@ -21,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/owner")
+@CrossOrigin(origins = "http://localhost:3000")
 public class OwnerController {
 
     @Autowired

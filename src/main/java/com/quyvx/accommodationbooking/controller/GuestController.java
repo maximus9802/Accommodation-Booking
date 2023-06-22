@@ -2,6 +2,7 @@ package com.quyvx.accommodationbooking.controller;
 
 import com.quyvx.accommodationbooking.dto.HotelDetail;
 import com.quyvx.accommodationbooking.dto.HotelDto;
+import com.quyvx.accommodationbooking.dto.RatingDto;
 import com.quyvx.accommodationbooking.dto.RoomDto;
 import com.quyvx.accommodationbooking.dto.auth.AuthenticationRequest;
 import com.quyvx.accommodationbooking.dto.auth.AuthenticationResponse;
@@ -14,6 +15,7 @@ import com.quyvx.accommodationbooking.service.auth.AuthenticationService;
 import com.quyvx.accommodationbooking.service.hotel.HotelService;
 import com.quyvx.accommodationbooking.service.jwt.JwtService;
 import com.quyvx.accommodationbooking.service.jwt.RefreshTokenService;
+import com.quyvx.accommodationbooking.service.rating.RatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +36,8 @@ public class GuestController {
 
     @Autowired
     private HotelService hotelService;
+    @Autowired
+    private RatingService ratingService;
     private final AuthenticationService authenticationService;
     private final RefreshTokenService refreshTokenService;
     private final JwtService jwtService;
@@ -59,6 +63,11 @@ public class GuestController {
                                                           @RequestParam(defaultValue = "assess") String sortBy
     ) {
         return ResponseEntity.ok(hotelService.searchByLocation(pageNumber, pageSize, location, sortBy));
+    }
+
+    @GetMapping("/hotel/rating")
+    public ResponseEntity<List<RatingDto>> getAllRatingByHotelId(@RequestParam Long hotelId) throws Exception {
+        return ResponseEntity.ok(ratingService.getAllRatingByHotelId(hotelId));
     }
 
     @GetMapping("/hotels")

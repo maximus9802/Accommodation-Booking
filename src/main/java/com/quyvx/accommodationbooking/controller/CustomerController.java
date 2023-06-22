@@ -73,6 +73,12 @@ public class CustomerController {
         return ResponseEntity.ok(ratingService.updateRating(accountId, idBooking, idRating, ratingDto));
     }
 
+    @GetMapping("/{accountId}/rating/all")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<List<RatingDto>> getAllRatingByAccountId(@PathVariable("accountId") Long accountId) throws Exception {
+        return ResponseEntity.ok(ratingService.getAllRatingByAccountId(accountId));
+    }
+
     @DeleteMapping("/{accountId}/{idBooking}/cancelBooking")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<NotificationDto> cancelBookingByCustomer(@PathVariable("accountId") Long accountId,

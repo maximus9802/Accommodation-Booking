@@ -3,11 +3,14 @@ package com.quyvx.accommodationbooking.service.rating;
 import com.quyvx.accommodationbooking.dto.Message;
 import com.quyvx.accommodationbooking.dto.NotificationDto;
 import com.quyvx.accommodationbooking.dto.RatingDto;
+import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.*;
 import com.quyvx.accommodationbooking.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +25,8 @@ public class RatingServiceImpl implements  RatingService{
     private HotelRepository hotelRepository;
     @Autowired
     private NotificationRepository notificationRepository;
+    @Autowired
+    private AccountRepository accountRepository;
     @Override
     public NotificationDto newRating(Long idAccount, Long roomId, Long idBooking, RatingDto ratingDto) throws Exception {
         Optional<Booking> bookingOptional = bookingRepository.findById(idBooking);
@@ -128,6 +133,56 @@ public class RatingServiceImpl implements  RatingService{
         } throw new Exception("Invalid Booking.");
 
     }
+
+    @Override
+    public List<RatingDto> getAllRatingByAccountId(Long accountId) throws Exception {
+        Optional<Account> accountOptional = accountRepository.findById(accountId);
+        if(accountOptional.isPresent()){
+            List<Booking> bookings = bookingRepository.findByAccountId(accountId);
+            List<RatingDto> ratingDtos = new ArrayList<>();
+            for(Booking booking : bookings){
+                List<Rating> ratings = ratingRepository.findByBookingId(booking.getId());
+                if(ratings.isEmpty()) continue;
+                else {
+                    for(Rating rating : ratings){
+                        var temp = RatingDto
+                                .builder()
+                                .comment(rating.getComment())
+                                .score(rating.getScore())
+                                .roomType(rating.getRoom().getRoomType())
+                                .nameHotel(rating.getRoom().getHotel().getName())
+                                .build();
+                        ratingDtos.add(temp);
+                    }
+                }
+            }
+            return ratingDtos;
+        } throw new Exception("Invalid account");
+    }
+
+    @Override
+    public List<RatingDto> getAllRatingByHotelId(Long hotelId) throws Exception {
+        Optional<Hotel> hotelOptional = hotelRepository.findById(hotelId);
+        if(hotelOptional.isPresent()){
+            List<Room> rooms = roomRepository.findByHotelId(hotelId);
+            List<RatingDto> ratingDtos = new ArrayList<>();
+            for(Room room : rooms){
+                List<Rating> ratings = ratingRepository.findByRoomId(room.getId());
+                for(Rating rating : ratings){
+                    var temp = RatingDto
+                            .builder()
+                            .nameHotel(hotelOptional.get().getName())
+                            .roomType(room.getRoomType())
+                            .comment(rating.getComment())
+                            .score(rating.getScore())
+                            .build();
+                    ratingDtos.add(temp);
+                }
+            }
+            return ratingDtos;
+        } throw new InvalidException("Invalid hotel");
+    }
+
 
     @Override
     public NotificationDto updateRating(Long idAccount, Long idBooking, Long idRating, RatingDto ratingDto) throws Exception {

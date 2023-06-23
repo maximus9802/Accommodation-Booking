@@ -7,6 +7,7 @@ import com.quyvx.accommodationbooking.dto.PassUser;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.Account;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface AccountService {
@@ -27,4 +28,7 @@ public interface AccountService {
     Account findByUsername(String username);
 
     boolean existsUsername(String username);
+
+    List<AccountDto> getAllAccount(Long idAccount) throws Exception;
+
 }

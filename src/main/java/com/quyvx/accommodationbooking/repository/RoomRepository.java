@@ -14,7 +14,6 @@ import java.util.Optional;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-    Room save(Room room);
 
     @NotNull Optional<Room> findById(@NotNull Long id);
 

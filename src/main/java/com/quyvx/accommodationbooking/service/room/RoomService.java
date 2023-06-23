@@ -9,7 +9,7 @@ import com.quyvx.accommodationbooking.model.Room;
 import java.util.List;
 
 public interface RoomService {
-    NotificationDto save(Long idAccount, Long idHotel, RoomDto roomDto) throws InvalidException;
+    NotificationDto saveNewRoom(Long idAccount, Long idHotel, RoomDto roomDto) throws InvalidException;
 
     boolean isBookingInHotel(Long bookingId, Long hotelId);
 }

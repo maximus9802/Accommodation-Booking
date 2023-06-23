@@ -34,19 +34,19 @@ public class RoomServiceImpl implements RoomService {
 
 
     @Override
-    public NotificationDto save(Long idAccount, Long idHotel, RoomDto roomDto) throws InvalidException {
+    public NotificationDto saveNewRoom(Long idAccount, Long idHotel, RoomDto roomDto) throws InvalidException {
         Optional<Hotel> hotel = hotelService.findById(idHotel);
         if(hotel.isPresent()){
             if(Objects.equals(hotel.get().getAccount().getId(), idAccount)){
                 for(int i =0; i< roomDto.getNumberRooms(); i++){
-                    Room newRoom = new Room();
-                    newRoom.setHotel(hotel.get());
-                    newRoom.setRoomType(roomDto.getRoomType());
-                    newRoom.setPrice(roomDto.getPrice());
-                    newRoom.setDescription(roomDto.getDescription());
-                    newRoom.setService(roomDto.getService());
-                    newRoom.setImages(roomDto.getImages());
-                    roomRepository.save(newRoom);
+                    Room room = new Room();
+                    room.setHotel(hotel.get());
+                    room.setRoomType(roomDto.getRoomType());
+                    room.setPrice(roomDto.getPrice());
+                    room.setDescription(roomDto.getDescription());
+                    room.setService(roomDto.getService());
+                    room.setImages(roomDto.getImages());
+                    roomRepository.save(room);
                 }
                 var noti = Notification
                         .builder()

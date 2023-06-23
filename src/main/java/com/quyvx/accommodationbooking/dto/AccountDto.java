@@ -10,7 +10,10 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class AccountDto {
+    private Long id;
     private String name;
     private String address;
     private String phone;
+    private int score;
+    private Role role;
 }

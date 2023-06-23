@@ -96,17 +96,28 @@ public class RatingServiceImpl implements  RatingService{
                     float currentScore = room.getScore();
                     int currentNumberRating = room.getNumberRating();
                     float newScore = (currentScore*currentNumberRating - rating.getScore()) / (currentNumberRating - 1);
+                    if(currentNumberRating == 1 ){
+                        room.setScore(0);
+                        room.setNumberRating(0);
+                    }
+                    else {
+                        room.setScore(newScore);
+                        room.setNumberRating(currentNumberRating - 1 );
+                    }
 
-                    room.setScore(newScore);
-                    room.setNumberRating(currentNumberRating - 1 );
 
                     currentScore = hotel.getScore();
                     currentNumberRating = hotel.getNumberRating();
                     newScore = (currentScore*currentNumberRating - rating.getScore()) / (currentNumberRating - 1);
 
-
-                    hotel.setScore(newScore);
-                    hotel.setNumberRating(currentNumberRating - 1);
+                    if(currentNumberRating == 1){
+                        hotel.setScore(0);
+                        hotel.setNumberRating(0);
+                    }
+                    else {
+                        hotel.setScore(newScore);
+                        hotel.setNumberRating(currentNumberRating - 1);
+                    }
 
 //                    hotel.setScore((hotel.getScore()*(float)hotel.getNumberRating() - (float)rating.getScore())/((float)hotel.getNumberRating() - 1));
 //                    hotel.setNumberRating(hotel.getNumberRating() - 1);

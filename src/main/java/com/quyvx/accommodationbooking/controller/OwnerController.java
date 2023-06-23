@@ -84,7 +84,7 @@ public class OwnerController {
                                              @PathVariable("idHotel") Long idHotel,
                                              @RequestBody RoomDto roomDto
     ) throws InvalidException {
-        return ResponseEntity.ok(roomService.save(idAccount, idHotel, roomDto));
+        return ResponseEntity.ok(roomService.saveNewRoom(idAccount, idHotel, roomDto));
     }
 
     @GetMapping("/{id}/{idHotel}/booking")

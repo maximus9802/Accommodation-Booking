@@ -193,13 +193,13 @@ public class BookingServiceImpl implements  BookingService{
 
                     var noti = Notification
                             .builder()
-                            .message("Update status booking" + idBooking + "successful!")
+                            .message("Update status booking #" + idBooking + "successful!")
                             .account(account)
                             .booking(booking)
                             .build();
                     return NotificationDto
                             .builder()
-                            .message("Update status booking" + idBooking + "successful!")
+                            .message("Update status booking #" + idBooking + "successful!")
                             .accountId(idAccount)
                             .bookingId(idBooking)
                             .build();

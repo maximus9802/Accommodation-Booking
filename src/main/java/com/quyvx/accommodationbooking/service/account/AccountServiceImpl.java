@@ -7,12 +7,15 @@ import com.quyvx.accommodationbooking.dto.PassUser;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.Account;
 import com.quyvx.accommodationbooking.model.Notification;
+import com.quyvx.accommodationbooking.model.Role;
 import com.quyvx.accommodationbooking.repository.AccountRepository;
 import com.quyvx.accommodationbooking.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -177,6 +180,30 @@ public class AccountServiceImpl implements AccountService{
     public boolean existsUsername(String username) {
         Optional<Account> account = accountRepository.findByUsername(username);
         return account.isPresent();
+    }
+
+    @Override
+    public List<AccountDto> getAllAccount(Long idAccount) throws Exception {
+        Optional<Account> optionalAccount = accountRepository.findById(idAccount);
+        if(optionalAccount.isPresent()){
+            if(optionalAccount.get().getRole() == Role.ADMIN){
+                List<Account> accounts = accountRepository.findAll();
+                List<AccountDto> accountDtos = new ArrayList<>();
+                for(Account account : accounts){
+                    var temp = AccountDto
+                            .builder()
+                            .name(account.getName())
+                            .address(account.getAddress())
+                            .phone(account.getPhone())
+                            .id(account.getId())
+                            .score(account.getScore())
+                            .role(account.getRole())
+                            .build();
+                    accountDtos.add(temp);
+                }
+                return accountDtos;
+            } throw new Exception("You are not granted this permission.");
+        } throw new InvalidException("Invalid Account!");
     }
 
 

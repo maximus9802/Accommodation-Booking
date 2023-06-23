@@ -29,6 +29,6 @@ public interface AccountService {
 
     boolean existsUsername(String username);
 
-    List<AccountDto> getAllAccount(Long idAccount) throws Exception;
+    List<AccountDto> getAllAccount(Long idAccount,Integer pageNumber, Integer pageSize, String sortBy) throws Exception;
 
 }

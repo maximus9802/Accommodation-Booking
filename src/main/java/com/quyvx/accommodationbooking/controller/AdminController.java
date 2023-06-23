@@ -23,8 +23,12 @@ public class AdminController {
 
     @GetMapping("/{idAccount}/allAccount")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<List<AccountDto>> getAllAccount(@PathVariable("idAccount") Long  idAccount) throws Exception{
-        return ResponseEntity.ok(accountService.getAllAccount(idAccount));
+    public ResponseEntity<List<AccountDto>> getAllAccount(@PathVariable("idAccount") Long  idAccount,
+                                                          @RequestParam(defaultValue = "0") Integer pageNumber,
+                                                          @RequestParam(defaultValue = "10") Integer pageSize,
+                                                          @RequestParam(defaultValue = "score") String sortBy
+    ) throws Exception{
+        return ResponseEntity.ok(accountService.getAllAccount(idAccount, pageNumber, pageSize ,sortBy));
     }
 
     @PostMapping("/{idAccount}/sendNoti")

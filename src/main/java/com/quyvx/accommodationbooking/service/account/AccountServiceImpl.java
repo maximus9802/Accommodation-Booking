@@ -11,6 +11,9 @@ import com.quyvx.accommodationbooking.model.Role;
 import com.quyvx.accommodationbooking.repository.AccountRepository;
 import com.quyvx.accommodationbooking.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -183,10 +186,11 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public List<AccountDto> getAllAccount(Long idAccount) throws Exception {
+    public List<AccountDto> getAllAccount(Long idAccount, Integer pageNumber, Integer pageSize, String sortBy) throws Exception {
         Optional<Account> optionalAccount = accountRepository.findById(idAccount);
         if(optionalAccount.isPresent()){
             if(optionalAccount.get().getRole() == Role.ADMIN){
+                Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending());
                 List<Account> accounts = accountRepository.findAll();
                 List<AccountDto> accountDtos = new ArrayList<>();
                 for(Account account : accounts){

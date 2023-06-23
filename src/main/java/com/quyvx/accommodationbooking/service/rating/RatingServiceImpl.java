@@ -35,47 +35,49 @@ public class RatingServiceImpl implements  RatingService{
             if(booking.getAccount().getId() == idAccount){
                 Optional<Room> roomOptional = roomRepository.findById(roomId);
                 if(roomOptional.isPresent()){
-                    Room room = roomOptional.get();
-                    Rating rating = new Rating();
-                    Hotel hotel = room.getHotel();
+                    if(booking.getStatus() == "check_out"){
+                        Room room = roomOptional.get();
+                        Rating rating = new Rating();
+                        Hotel hotel = room.getHotel();
 
-                    rating.setBooking(booking);
-                    rating.setRoom(room);
-                    rating.setComment(ratingDto.getComment());
-                    rating.setScore(ratingDto.getScore());
+                        rating.setBooking(booking);
+                        rating.setRoom(room);
+                        rating.setComment(ratingDto.getComment());
+                        rating.setScore(ratingDto.getScore());
 
-                    float currentScore = room.getScore();
-                    int currentNumberRating = room.getNumberRating();
-                    float newScore = (currentScore*currentNumberRating + ratingDto.getScore()) / (currentNumberRating + 1);
+                        float currentScore = room.getScore();
+                        int currentNumberRating = room.getNumberRating();
+                        float newScore = (currentScore*currentNumberRating + ratingDto.getScore()) / (currentNumberRating + 1);
 
-                    room.setScore(newScore);
-                    room.setNumberRating(currentNumberRating +1 );
+                        room.setScore(newScore);
+                        room.setNumberRating(currentNumberRating +1 );
 
-                    currentScore = hotel.getScore();
-                    currentNumberRating = hotel.getNumberRating();
-                    newScore = (currentScore*currentNumberRating + ratingDto.getScore()) / (currentNumberRating + 1);
+                        currentScore = hotel.getScore();
+                        currentNumberRating = hotel.getNumberRating();
+                        newScore = (currentScore*currentNumberRating + ratingDto.getScore()) / (currentNumberRating + 1);
 
-                    hotel.setScore(newScore);
-                    hotel.setNumberRating(currentNumberRating + 1);
+                        hotel.setScore(newScore);
+                        hotel.setNumberRating(currentNumberRating + 1);
 
-                    roomRepository.save(room);
-                    hotelRepository.save(hotel);
+                        roomRepository.save(room);
+                        hotelRepository.save(hotel);
 
-                    Rating temp = ratingRepository.save(rating);
-                    var noti = Notification
-                            .builder()
-                            .message("Rating successful!")
-                            .account(booking.getAccount())
-                            .rating(temp)
-                            .build();
-                    notificationRepository.save(noti);
+                        Rating temp = ratingRepository.save(rating);
+                        var noti = Notification
+                                .builder()
+                                .message("Rating successful!")
+                                .account(booking.getAccount())
+                                .rating(temp)
+                                .build();
+                        notificationRepository.save(noti);
 
-                    return NotificationDto
-                            .builder()
-                            .accountId(idAccount)
-                            .message("Rating successful!")
-                            .ratingId(temp.getId())
-                            .build();
+                        return NotificationDto
+                                .builder()
+                                .accountId(idAccount)
+                                .message("Rating successful!")
+                                .ratingId(temp.getId())
+                                .build();
+                    } throw new Exception("You can not rating right now! ");
                 } throw new Exception("Invalid Room");
             } throw new Exception("This is not your booking!");
         } throw new Exception("Invalid Booking");

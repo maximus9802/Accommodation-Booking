@@ -3,10 +3,12 @@ package com.quyvx.accommodationbooking.service.hotel;
 import com.quyvx.accommodationbooking.dto.*;
 import com.quyvx.accommodationbooking.exception.InvalidException;
 import com.quyvx.accommodationbooking.model.*;
+import com.quyvx.accommodationbooking.repository.DateRentRepository;
 import com.quyvx.accommodationbooking.repository.HotelRepository;
 import com.quyvx.accommodationbooking.repository.NotificationRepository;
 import com.quyvx.accommodationbooking.repository.RoomRepository;
 import com.quyvx.accommodationbooking.service.account.AccountService;
+import com.quyvx.accommodationbooking.service.daterent.DateRentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,9 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class HotelServiceImpl implements HotelService{
@@ -29,6 +29,8 @@ public class HotelServiceImpl implements HotelService{
     private RoomRepository roomRepository;
     @Autowired
     private NotificationRepository notificationRepository;
+    @Autowired
+    private DateRentService dateRentService;
 
     @Override
     public NotificationDto save(Long id, HotelDto hotelDto) throws Exception {
@@ -98,6 +100,55 @@ public class HotelServiceImpl implements HotelService{
                 roomDtoList.add(roomDto);
             }
             hotelDetail.setRooms(roomDtoList);
+            return hotelDetail;
+        } throw new InvalidException("Hotel is not found for the id " + idHotel);
+    }
+
+    @Override
+    public HotelDetail viewHotelDetail(Long idHotel, DateTemp dateTemp) throws InvalidException {
+        List<String> roomType =  roomRepository.findDistinctRoomTypeByHotelId(idHotel);
+        Optional<Hotel> hotel = hotelRepository.findById(idHotel);
+        if(hotel.isPresent()){
+            HotelDetail hotelDetail = new HotelDetail();
+            hotelDetail.setNameHotel(hotel.get().getName());
+            hotelDetail.setLocation(hotel.get().getLocation());
+            hotelDetail.setScore(hotel.get().getScore());
+            hotelDetail.setShortDescription(hotel.get().getShortDescription());
+            hotelDetail.setDetailDescription(hotel.get().getDetailDescription());
+            hotelDetail.setAssess(hotel.get().getAssess());
+            hotelDetail.setAvatarHotel(hotel.get().getAvatarHotel());
+            hotelDetail.setNumberRating(hotel.get().getNumberRating());
+            List<RoomDto> roomDtos = new ArrayList<>();
+            Map<String, Integer> map = new HashMap<>();
+            for(String type : roomType){
+                List<Room> rooms = roomRepository.findByHotelIdAndRoomType(idHotel, type);
+                RoomDto roomDto  = new RoomDto();
+                roomDto.setRoomType(type);
+                roomDto.setPrice(rooms.get(1).getPrice());
+                roomDto.setDescription(rooms.get(1).getDescription());
+                roomDto.setService(rooms.get(1).getService());
+                roomDto.setImages(rooms.get(1).getImages());
+
+                Iterator<Room> iterator = rooms.iterator();
+                while (iterator.hasNext()) {
+                    Room room = iterator.next();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(dateTemp.getCheckIn());
+                    while (!calendar.getTime().after(dateTemp.getCheckOut())){
+                        Date currentDate = calendar.getTime();
+                        if (dateRentService.checkFree(room.getId(), currentDate))
+                            calendar.add(Calendar.DATE, 1);
+                        else {
+                            iterator.remove(); // Sử dụng iterator để xóa phần tử
+                            break;
+                        }
+                    }
+                }
+                roomDtos.add(roomDto);
+                map.put(type, rooms.size());
+            }
+            hotelDetail.setRooms(roomDtos);
+            hotelDetail.setRoomNumber(map);
             return hotelDetail;
         } throw new InvalidException("Hotel is not found for the id " + idHotel);
     }

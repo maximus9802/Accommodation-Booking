@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface BookingService {
 
-    NotificationDto newBooking(Long id, BookingDto bookingDto) throws InvalidException;
+    NotificationDto newBooking(Long id, BookingDto bookingDto) throws Exception;
 
     List<BookingDto> allBooking(Long accountId);
 

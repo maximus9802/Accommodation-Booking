@@ -27,7 +27,7 @@ public class CustomerController {
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<NotificationDto> createBooking(@PathVariable("idAccount") Long accountId,
                                                          @RequestBody BookingDto bookingDto
-    ) throws InvalidException {
+    ) throws Exception {
         return ResponseEntity.ok(bookingService.newBooking(accountId, bookingDto));
     }
 

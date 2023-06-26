@@ -37,7 +37,7 @@ public class BookingServiceImpl implements  BookingService{
     private NotificationRepository notificationRepository;
 
     @Override
-    public NotificationDto newBooking(Long id, BookingDto bookingDto) throws InvalidException {
+    public NotificationDto newBooking(Long id, BookingDto bookingDto) throws Exception {
         Optional<Account> optionalAccount = accountRepository.findById(id);
         if(optionalAccount.isPresent()){
             Account account = optionalAccount.get();
@@ -45,12 +45,7 @@ public class BookingServiceImpl implements  BookingService{
             List<DateRent> dateRents = new ArrayList<>();
             for(String roomType : bookingDto.getRooms().keySet()){
                 List<Room> rooms = roomRepository.findByHotelIdAndRoomType(bookingDto.getHotelId(), roomType);
-                if(rooms.isEmpty()){
-                    return NotificationDto
-                            .builder()
-                            .message("The hotel does not have rooms of this type. Retry!")
-                            .build();
-                }
+                if(rooms.isEmpty()) throw new Exception("The hotel does not have rooms of this type. Retry!");
 
                 Iterator<Room> iterator = rooms.iterator();
                 while (iterator.hasNext()) {
@@ -68,12 +63,7 @@ public class BookingServiceImpl implements  BookingService{
                     }
                 }
 
-                if(rooms.size() < bookingDto.getRooms().get(roomType)){
-                    return NotificationDto
-                            .builder()
-                            .message("The hotel does not have enough rooms of this type. Retry!")
-                            .build();
-                }
+                if(rooms.size() < bookingDto.getRooms().get(roomType)) throw new Exception("The hotel does not have rooms of this type. Retry!");
 
                 for(int i =0; i<bookingDto.getRooms().get(roomType); i++){
                     Room room = rooms.get(i);

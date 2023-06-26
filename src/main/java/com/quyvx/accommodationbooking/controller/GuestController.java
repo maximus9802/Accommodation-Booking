@@ -1,9 +1,6 @@
 package com.quyvx.accommodationbooking.controller;
 
-import com.quyvx.accommodationbooking.dto.HotelDetail;
-import com.quyvx.accommodationbooking.dto.HotelDto;
-import com.quyvx.accommodationbooking.dto.RatingDto;
-import com.quyvx.accommodationbooking.dto.RoomDto;
+import com.quyvx.accommodationbooking.dto.*;
 import com.quyvx.accommodationbooking.dto.auth.AuthenticationRequest;
 import com.quyvx.accommodationbooking.dto.auth.AuthenticationResponse;
 import com.quyvx.accommodationbooking.dto.auth.RefreshTokenRequest;
@@ -25,7 +22,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -101,6 +100,14 @@ public class GuestController {
     ) throws InvalidException {
         return ResponseEntity.ok(hotelService.viewHotelDetail(idHotel));
     }
+
+    @GetMapping("/hotels/{idHotel}/details")
+    public ResponseEntity<HotelDetail> viewHotelDetail(@PathVariable("idHotel") Long idHotel,
+                                                       @RequestBody DateTemp dateTemp
+    ) throws Exception{
+        return ResponseEntity.ok(hotelService.viewHotelDetail(idHotel, dateTemp));
+    }
+
 
     @PostMapping("/refreshToken")
     public AuthenticationResponse refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest){

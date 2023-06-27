@@ -93,10 +93,10 @@ public class HotelServiceImpl implements HotelService{
                 List<Room> rooms = roomRepository.findByHotelIdAndRoomType(idHotel, type);
                 RoomDto roomDto  = new RoomDto();
                 roomDto.setRoomType(type);
-                roomDto.setPrice(rooms.get(1).getPrice());
-                roomDto.setDescription(rooms.get(1).getDescription());
-                roomDto.setService(rooms.get(1).getService());
-                roomDto.setImages(rooms.get(1).getImages());
+                roomDto.setPrice(rooms.get(0).getPrice());
+                roomDto.setDescription(rooms.get(0).getDescription());
+                roomDto.setService(rooms.get(0).getService());
+                roomDto.setImages(rooms.get(0).getImages());
                 roomDtoList.add(roomDto);
             }
             hotelDetail.setRooms(roomDtoList);
@@ -124,10 +124,10 @@ public class HotelServiceImpl implements HotelService{
                 List<Room> rooms = roomRepository.findByHotelIdAndRoomType(idHotel, type);
                 RoomDto roomDto  = new RoomDto();
                 roomDto.setRoomType(type);
-                roomDto.setPrice(rooms.get(1).getPrice());
-                roomDto.setDescription(rooms.get(1).getDescription());
-                roomDto.setService(rooms.get(1).getService());
-                roomDto.setImages(rooms.get(1).getImages());
+                roomDto.setPrice(rooms.get(0).getPrice());
+                roomDto.setDescription(rooms.get(0).getDescription());
+                roomDto.setService(rooms.get(0).getService());
+                roomDto.setImages(rooms.get(0).getImages());
 
                 Iterator<Room> iterator = rooms.iterator();
                 while (iterator.hasNext()) {

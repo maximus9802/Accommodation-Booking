@@ -41,6 +41,7 @@ public class GuestController {
     private final RefreshTokenService refreshTokenService;
     private final JwtService jwtService;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request
@@ -48,6 +49,7 @@ public class GuestController {
         return ResponseEntity.ok(authenticationService.register(request));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
@@ -55,6 +57,7 @@ public class GuestController {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/hotel")
     public ResponseEntity<List<HotelDto>> searchHotelByLocation(@RequestParam(defaultValue = "Vietnam") String location,
                                                           @RequestParam(defaultValue = "0") Integer pageNumber,
@@ -64,11 +67,13 @@ public class GuestController {
         return ResponseEntity.ok(hotelService.searchByLocation(pageNumber, pageSize, location, sortBy));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/hotel/rating")
     public ResponseEntity<List<RatingDto>> getAllRatingByHotelId(@RequestParam Long hotelId) throws Exception {
         return ResponseEntity.ok(ratingService.getAllRatingByHotelId(hotelId));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/hotels")
     public List<HotelDto> allHotel(@RequestParam(defaultValue = "0") Integer pageNumber,
                                    @RequestParam(defaultValue = "10") Integer pageSize,
@@ -94,6 +99,7 @@ public class GuestController {
         return hotelDtos;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/hotels/{idHotel}/detail")
     public ResponseEntity<HotelDetail> viewHotelDetail(
             @PathVariable("idHotel") Long idHotel
@@ -101,6 +107,7 @@ public class GuestController {
         return ResponseEntity.ok(hotelService.viewHotelDetail(idHotel));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/hotels/{idHotel}/details")
     public ResponseEntity<HotelDetail> viewHotelDetail(@PathVariable("idHotel") Long idHotel,
                                                        @RequestBody DateTemp dateTemp
@@ -108,7 +115,7 @@ public class GuestController {
         return ResponseEntity.ok(hotelService.viewHotelDetail(idHotel, dateTemp));
     }
 
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/refreshToken")
     public AuthenticationResponse refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest){
         return refreshTokenService.findByRefreshToken(refreshTokenRequest.getRefreshToken())

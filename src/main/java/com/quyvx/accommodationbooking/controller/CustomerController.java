@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/customer")
-@CrossOrigin(origins = "http://localhost:3000")
 public class CustomerController {
     @Autowired
     private AccountService accountService;
@@ -23,6 +22,7 @@ public class CustomerController {
     @Autowired
     private RatingService ratingService;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/{idAccount}/booking/new")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<NotificationDto> createBooking(@PathVariable("idAccount") Long accountId,
@@ -31,6 +31,7 @@ public class CustomerController {
         return ResponseEntity.ok(bookingService.newBooking(accountId, bookingDto));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{idAccount}/booking")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<BookingDto> searchBookingById(@PathVariable("idAccount") Long idAccount,
@@ -38,12 +39,15 @@ public class CustomerController {
     ) throws Exception {
         return ResponseEntity.ok(bookingService.searchBookingById(idAccount, bookingId));
     }
+
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{idAccount}/booking/all")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<List<BookingDto>> allBooking(@PathVariable("idAccount") Long accountId) throws InvalidException {
         return ResponseEntity.ok(bookingService.allBooking(accountId));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/{idAccount}/{idBooking}/{roomId}/newRating")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<NotificationDto> newRating(@PathVariable("idAccount") Long idAccount,
@@ -54,6 +58,7 @@ public class CustomerController {
         return ResponseEntity.ok(ratingService.newRating(idAccount, roomId, idBooking, ratingDto));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/{idAccount}/{idBooking}/deleteRating")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<NotificationDto> deleteRating(@PathVariable("idAccount") Long idAccount,
@@ -63,6 +68,7 @@ public class CustomerController {
         return ResponseEntity.ok(ratingService.deleteRating(idAccount, idBooking, idRating));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/{accountId}/{idBooking}/updateRating")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<NotificationDto> updateRating(@PathVariable("accountId") Long accountId,
@@ -73,12 +79,14 @@ public class CustomerController {
         return ResponseEntity.ok(ratingService.updateRating(accountId, idBooking, idRating, ratingDto));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{accountId}/rating/all")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<List<RatingDto>> getAllRatingByAccountId(@PathVariable("accountId") Long accountId) throws Exception {
         return ResponseEntity.ok(ratingService.getAllRatingByAccountId(accountId));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/{accountId}/{idBooking}/cancelBooking")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<NotificationDto> cancelBookingByCustomer(@PathVariable("accountId") Long accountId,

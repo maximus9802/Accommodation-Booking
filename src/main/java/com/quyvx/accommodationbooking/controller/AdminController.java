@@ -21,6 +21,7 @@ public class AdminController {
     @Autowired
     private NotificationService notificationService;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{idAccount}/allAccount")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<AccountDto>> getAllAccount(@PathVariable("idAccount") Long  idAccount,
@@ -31,6 +32,7 @@ public class AdminController {
         return ResponseEntity.ok(accountService.getAllAccount(idAccount, pageNumber, pageSize ,sortBy));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/{idAccount}/sendNoti")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<NotificationDto> sendNotification(@PathVariable("idAccount") Long idAccount,

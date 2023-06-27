@@ -95,7 +95,7 @@ public class BookingServiceImpl implements  BookingService{
             var noti = Notification
                     .builder()
                     .booking(temp)
-                    .message("Successful booking!")
+                    .message("Successful booking #" + temp.getId() + " !")
                     .account(account)
                     .build();
             notificationRepository.save(noti);
@@ -103,9 +103,9 @@ public class BookingServiceImpl implements  BookingService{
                     .builder()
                     .accountId(account.getId())
                     .bookingId(temp.getId())
-                    .message("Successful booking!")
+                    .message("Successful booking #" + temp.getId() + " !")
                     .build();
-        } throw new InvalidException("Account is not found for the id " + id);
+        } throw new InvalidException("Account is not found for the id #" + id);
     }
 
     @Override

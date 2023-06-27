@@ -25,7 +25,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/owner")
-@CrossOrigin(origins = "http://localhost:3000")
 public class OwnerController {
 
     @Autowired
@@ -39,6 +38,7 @@ public class OwnerController {
     @Autowired
     private AccountRepository accountRepository;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/{id}/newHotel")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
     public ResponseEntity<NotificationDto> createHotel(@PathVariable("id") Long accountId,
@@ -47,6 +47,7 @@ public class OwnerController {
         return ResponseEntity.ok(hotelService.save(accountId, hotelDto));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}/allHotel")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
     public List<HotelDto> getAllHotel(@PathVariable("id") Long id,
@@ -78,6 +79,7 @@ public class OwnerController {
         } throw new InvalidException("Invalid account with #" +id);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/{id}/{idHotel}/new_room")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
     public ResponseEntity<NotificationDto> createRoom(@PathVariable("id") Long idAccount,
@@ -87,6 +89,7 @@ public class OwnerController {
         return ResponseEntity.ok(roomService.saveNewRoom(idAccount, idHotel, roomDto));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}/{idHotel}/booking")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
     public ResponseEntity<List<BookingDto>> searchBookingByPhone(@PathVariable("id") Long idAccount,
@@ -96,6 +99,7 @@ public class OwnerController {
         return ResponseEntity.ok(bookingService.searchByPhoneCustomer(phone, idHotel));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/{idAccount}/{idHotel}/booking")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
     public ResponseEntity<NotificationDto> updateStatusBooking(@PathVariable("idAccount")Long idAccount,
@@ -106,6 +110,7 @@ public class OwnerController {
         return ResponseEntity.ok(bookingService.changeStatus(idAccount, idHotel, idBooking, status));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/{idAccount}/{idHotel}/cancelBooking)")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
     public ResponseEntity<NotificationDto> cancelBookingByOwner(@PathVariable("idAccount") Long idAccount,
@@ -116,6 +121,7 @@ public class OwnerController {
         return ResponseEntity.ok(bookingService.cancelBookingByOwner(idAccount, idHotel, idBooking, reason));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{idAccount}/{idHotel}/searchBooking")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
     public ResponseEntity<BookingDto> searchBookingById(@PathVariable("idAccount") Long idAccount,

@@ -125,6 +125,8 @@ public class BookingServiceImpl implements  BookingService{
                 break;
             }
             assert firstRoom != null;
+            bookingDto.setBookingId(booking.getId());
+            bookingDto.setHotelId(firstRoom.getHotel().getId());
             bookingDto.setNameHotel(firstRoom.getHotel().getName());
             bookingDto.setRooms(map);
             bookingDto.setDescription(booking.getDescription());

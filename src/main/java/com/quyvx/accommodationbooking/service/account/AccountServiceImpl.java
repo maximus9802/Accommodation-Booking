@@ -157,6 +157,7 @@ public class AccountServiceImpl implements AccountService{
                     .name(account.get().getName())
                     .phone(account.get().getPhone())
                     .address(account.get().getAddress())
+                    .score(account.get().getScore())
                     .build();
         } throw new InvalidException("Invalid Account.");
     }

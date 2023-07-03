@@ -1,5 +1,6 @@
 package com.quyvx.accommodationbooking.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quyvx.accommodationbooking.dto.*;
 import com.quyvx.accommodationbooking.dto.auth.AuthenticationRequest;
 import com.quyvx.accommodationbooking.dto.auth.AuthenticationResponse;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -108,7 +110,7 @@ public class GuestController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/hotels/{idHotel}/details")
+    @PostMapping("/hotels/{idHotel}/details")
     public ResponseEntity<HotelDetail> viewHotelDetail(@PathVariable("idHotel") Long idHotel,
                                                        @RequestBody DateTemp dateTemp
     ) throws Exception{

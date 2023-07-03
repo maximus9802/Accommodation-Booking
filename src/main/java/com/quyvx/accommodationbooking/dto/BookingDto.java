@@ -14,6 +14,7 @@ import java.util.List;
 @Setter
 @Builder
 public class BookingDto {
+    private Long bookingId;
 
     private HashMap<String, Integer> rooms = new HashMap<>();
 

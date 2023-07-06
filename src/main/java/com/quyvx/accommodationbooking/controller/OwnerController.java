@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -129,6 +130,26 @@ public class OwnerController {
                                                         @RequestParam Long idBooking
     ) throws Exception{
         return ResponseEntity.ok(bookingService.searchBookingById(idAccount, idHotel, idBooking));
+    }
+
+    @CrossOrigin(origins = "https://localhost:3000")
+    @PutMapping("/{idAccount}/{idHotel}/updateHotel")
+    @PreAuthorize("hasAuthority('ROLE_OWNER')")
+    public ResponseEntity<NotificationDto> updateHotelInfo(@PathVariable("idAccount") Long idAccount,
+                                                           @PathVariable("idHotel") Long idHotel,
+                                                           @RequestBody HotelDto hotelDto
+
+    ) throws Exception {
+        return ResponseEntity.ok(hotelService.updateHotelInfo(idAccount, idHotel, hotelDto));
+    }
+
+    @CrossOrigin(origins = "https://localhost:3000")
+    @GetMapping("/{idAccount}/{idHotel}/getAllBooking")
+    @PreAuthorize("hasAuthority('ROLE_OWNER')")
+    public ResponseEntity<List<BookingDto>> getAllBooking(@PathVariable("idAccount") Long idAccount,
+                                                    @PathVariable("idHotel") Long idHotel
+    ) throws Exception {
+        return ResponseEntity.ok(bookingService.getAllBookingByOwner(idAccount, idHotel));
     }
 
 

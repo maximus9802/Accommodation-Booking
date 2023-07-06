@@ -195,4 +195,34 @@ public class HotelServiceImpl implements HotelService{
         }
         return hotelDtos;
     }
+
+    @Override
+    public NotificationDto updateHotelInfo(Long idAccount, Long idHotel, HotelDto hotelDto) throws Exception {
+        Optional<Hotel> optionalHotel = hotelRepository.findById(idHotel);
+        if(optionalHotel.isPresent()){
+            Hotel hotel = optionalHotel.get();
+            if(Objects.equals(hotel.getAccount().getId(), idAccount)){
+                hotel.setName(hotelDto.getNameHotel());
+                hotel.setLocation(hotelDto.getLocation());
+                hotel.setAssess(hotelDto.getAssess());
+                hotel.setAvatarHotel(hotelDto.getAvatarHotel());
+                hotel.setShortDescription(hotelDto.getShortDescription());
+                hotel.setDetailDescription(hotelDto.getDetailDescription());
+                hotelRepository.save(hotel);
+
+                var noti  = Notification
+                        .builder()
+                        .account(hotel.getAccount())
+                        .hotel(hotel)
+                        .message("Update hotel #" + idHotel + " successful!")
+                        .build();
+                notificationRepository.save(noti);
+
+                return NotificationDto
+                        .builder()
+                        .message("Update hotel #" +idHotel + " successful!")
+                        .build();
+            } throw new Exception("Error authentication.");
+        } throw new InvalidException("Invalid hotel id #"+ idHotel + " .");
+    }
 }

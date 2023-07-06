@@ -25,4 +25,6 @@ public interface HotelService {
     Page<Hotel> findAll(Pageable pageable);
 
     List<HotelDto> searchByLocation(Integer pageNumber, Integer pageSize, String location, String sortBy);
+
+    NotificationDto updateHotelInfo(Long idAccount, Long idHotel, HotelDto hotelDto) throws  Exception;
 }

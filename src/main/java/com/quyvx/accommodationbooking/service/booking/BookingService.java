@@ -16,6 +16,8 @@ public interface BookingService {
 
     List<BookingDto> allBooking(Long accountId);
 
+    List<BookingDto> getAllBookingByOwner(Long idAccount, Long idHotel) throws  Exception;
+
     List<BookingDto> searchByPhoneCustomer(String phoneCustomer, Long hotelId) throws InvalidException;
 
     NotificationDto changeStatus(Long idAccount, Long idHotel, Long idBooking, String status) throws Exception;

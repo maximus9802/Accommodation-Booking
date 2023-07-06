@@ -141,6 +141,41 @@ public class BookingServiceImpl implements  BookingService{
     }
 
     @Override
+    public List<BookingDto> getAllBookingByOwner(Long idAccount, Long idHotel) throws Exception{
+        Optional<Hotel> optionalHotel = hotelRepository.findById(idHotel);
+        if(optionalHotel.isPresent()){
+            Hotel hotel = optionalHotel.get();
+            if(Objects.equals(hotel.getAccount().getId(), idAccount)){
+                Optional<Account> account = accountRepository.findById(idAccount);
+                List<Booking> bookings = bookingRepository.findAll();
+                List<BookingDto> bookingDtos = new ArrayList<>();
+                for(Booking booking : bookings){
+                    Set<Room> rooms = booking.getRooms();
+                    for(Room  room : rooms){
+                        if(Objects.equals(room.getHotel(), hotel)){
+                            bookingDtos.add(BookingDto
+                                    .builder()
+                                            .bookingId(booking.getId())
+                                            .nameHotel(hotel.getName())
+                                            .status(booking.getStatus())
+                                            .dateCheckIn(booking.getDateCheckIn())
+                                            .dateCheckOut(booking.getDateCheckOut())
+                                            .description(booking.getDescription())
+                                            .totalBill(booking.getTotalBill())
+                                            .listRoomId(bookingRepository.getBookingRoomIds(booking.getId()))
+                                            .phoneCustomer(account.get().getPhone())
+                                            .nameCustomer(account.get().getName())
+                                    .build());
+                        }
+                        break;
+                    }
+                }
+                return bookingDtos;
+            } throw  new Exception("You are not access!");
+        } throw  new InvalidException("Invalid Hotel #"+ idHotel);
+    }
+
+    @Override
     public List<BookingDto> searchByPhoneCustomer(String phone, Long hotelId) throws InvalidException {
         List<Booking> bookings = bookingRepository.findByPhoneAccount(phone);
         Iterator<Booking> iterator = bookings.iterator();

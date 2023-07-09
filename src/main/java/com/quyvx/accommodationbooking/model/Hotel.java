@@ -34,7 +34,7 @@ public class Hotel {
 
     private int assess;
 
-    @Column(name = "avatar_hotel")
+    @Column(name = "avatar_hotel", columnDefinition = "TEXT")
     private String avatarHotel;
 
     @Column(name = "number_rating")

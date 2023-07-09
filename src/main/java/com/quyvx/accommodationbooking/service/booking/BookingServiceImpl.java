@@ -163,8 +163,8 @@ public class BookingServiceImpl implements  BookingService{
                                             .description(booking.getDescription())
                                             .totalBill(booking.getTotalBill())
                                             .listRoomId(bookingRepository.getBookingRoomIds(booking.getId()))
-                                            .phoneCustomer(account.get().getPhone())
-                                            .nameCustomer(account.get().getName())
+                                            .phoneCustomer(booking.getAccount().getPhone())
+                                            .nameCustomer(booking.getAccount().getName())
                                     .build());
                         }
                         break;

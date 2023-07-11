@@ -132,7 +132,7 @@ public class OwnerController {
         return ResponseEntity.ok(bookingService.searchBookingById(idAccount, idHotel, idBooking));
     }
 
-    @CrossOrigin(origins = "https://localhost:3000")
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/{idAccount}/{idHotel}/updateHotel")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
     public ResponseEntity<NotificationDto> updateHotelInfo(@PathVariable("idAccount") Long idAccount,
@@ -143,7 +143,7 @@ public class OwnerController {
         return ResponseEntity.ok(hotelService.updateHotelInfo(idAccount, idHotel, hotelDto));
     }
 
-    @CrossOrigin(origins = "https://localhost:3000")
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{idAccount}/{idHotel}/getAllBooking")
     @PreAuthorize("hasAuthority('ROLE_OWNER')")
     public ResponseEntity<List<BookingDto>> getAllBooking(@PathVariable("idAccount") Long idAccount,

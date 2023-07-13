@@ -244,7 +244,7 @@ public class BookingServiceImpl implements  BookingService{
             if(optionalBooking.isPresent()){
                 Booking booking = optionalBooking.get();
                 if(booking.getAccount().getId() == idAccount){
-                    if(checkDateBefore(booking.getDateCheckIn())){
+                    if(checkDateBefore(booking.getDateCheckIn()) && !booking.getStatus().equals("canceled")){
                         booking.setStatus("canceled");
 
                         account.setScore((account.getScore()-10));

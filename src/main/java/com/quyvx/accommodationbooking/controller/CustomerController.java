@@ -48,14 +48,13 @@ public class CustomerController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/{idAccount}/{idBooking}/{roomId}/newRating")
+    @PostMapping("/{idAccount}/{idBooking}/newRating")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<NotificationDto> newRating(@PathVariable("idAccount") Long idAccount,
                                              @PathVariable("idBooking") Long idBooking,
-                                             @PathVariable("roomId") Long roomId,
                                              @RequestBody RatingDto ratingDto
     ) throws Exception {
-        return ResponseEntity.ok(ratingService.newRating(idAccount, roomId, idBooking, ratingDto));
+        return ResponseEntity.ok(ratingService.newRating(idAccount, idBooking, ratingDto));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")

@@ -9,6 +9,8 @@ import java.util.List;
 public interface RatingService {
     NotificationDto newRating(Long idAccount, Long roomId, Long idBooking, RatingDto ratingDto) throws Exception;
 
+    NotificationDto newRating(Long idAccount, Long idBooking, RatingDto ratingDto) throws Exception;
+
     NotificationDto deleteRating(Long idAccount, Long idBooking, Long idRating) throws Exception;
 
     List<RatingDto> getAllRatingByAccountId(Long accountId) throws  Exception;

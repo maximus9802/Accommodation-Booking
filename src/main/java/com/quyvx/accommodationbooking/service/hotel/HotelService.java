@@ -18,6 +18,8 @@ public interface HotelService {
 
     HotelDetail viewHotelDetail(Long idHotel, DateTemp dateTemp) throws InvalidException;
 
+    HotelDetail manageHotel(Long idAccount, Long idHotel) throws  Exception;
+
     List<Hotel> findByAccountId(Long account_id, Pageable pageable);
 
     Optional<Hotel> findById(Long id) throws InvalidException;

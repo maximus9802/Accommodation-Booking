@@ -152,6 +152,15 @@ public class OwnerController {
         return ResponseEntity.ok(bookingService.getAllBookingByOwner(idAccount, idHotel));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/{idAccount}/{idHotel}/detail")
+    @PreAuthorize("hasAuthority('ROLE_OWNER')")
+    public ResponseEntity<HotelDetail> manageHotel(@PathVariable("idAccount") Long idAccount,
+                                                   @PathVariable("idHotel") Long idHotel
+    ) throws Exception {
+        return ResponseEntity.ok(hotelService.manageHotel(idAccount, idHotel));
+    }
+
 
 //
 //    @GetMapping("/{id}/{idHotel}/details")

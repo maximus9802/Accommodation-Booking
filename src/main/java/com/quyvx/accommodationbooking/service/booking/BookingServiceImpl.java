@@ -148,6 +148,13 @@ public class BookingServiceImpl implements  BookingService{
             if(Objects.equals(hotel.getAccount().getId(), idAccount)){
                 Optional<Account> account = accountRepository.findById(idAccount);
                 List<Booking> bookings = bookingRepository.findAll();
+                Iterator<Booking> iterator = bookings.iterator();
+                while(iterator.hasNext()){
+                    Booking booking = iterator.next();
+                    if(!Objects.equals(booking.getStatus(), "accepted")){
+                        iterator.remove();
+                    }
+                }
                 List<BookingDto> bookingDtos = new ArrayList<>();
                 for(Booking booking : bookings){
                     Set<Room> rooms = booking.getRooms();
@@ -155,16 +162,16 @@ public class BookingServiceImpl implements  BookingService{
                         if(Objects.equals(room.getHotel(), hotel)){
                             bookingDtos.add(BookingDto
                                     .builder()
-                                            .bookingId(booking.getId())
-                                            .nameHotel(hotel.getName())
-                                            .status(booking.getStatus())
-                                            .dateCheckIn(booking.getDateCheckIn())
-                                            .dateCheckOut(booking.getDateCheckOut())
-                                            .description(booking.getDescription())
-                                            .totalBill(booking.getTotalBill())
-                                            .listRoomId(bookingRepository.getBookingRoomIds(booking.getId()))
-                                            .phoneCustomer(booking.getAccount().getPhone())
-                                            .nameCustomer(booking.getAccount().getName())
+                                    .bookingId(booking.getId())
+                                    .nameHotel(hotel.getName())
+                                    .status(booking.getStatus())
+                                    .dateCheckIn(booking.getDateCheckIn())
+                                    .dateCheckOut(booking.getDateCheckOut())
+                                    .description(booking.getDescription())
+                                    .totalBill(booking.getTotalBill())
+                                    .listRoomId(bookingRepository.getBookingRoomIds(booking.getId()))
+                                    .phoneCustomer(booking.getAccount().getPhone())
+                                    .nameCustomer(booking.getAccount().getName())
                                     .build());
                         }
                         break;
@@ -308,7 +315,7 @@ public class BookingServiceImpl implements  BookingService{
                     Optional<Booking> bookingOptional = bookingRepository.findById(idBooking);
                     if(bookingOptional.isPresent()){
                         Booking booking = bookingOptional.get();
-                        if(checkDateAfter(booking.getDateCheckIn())){
+                        if(checkDateAfter(booking.getDateCheckIn()) && !Objects.equals(booking.getStatus(), "canceled")){
                             booking.setStatus("no check-in");
                             bookingRepository.save(booking);
 
